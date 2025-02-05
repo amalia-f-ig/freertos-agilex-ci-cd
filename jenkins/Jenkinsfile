@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+ 
+    environment {
+        ARM_TOOLCHAIN_PATH = "/home/intel6/satheesh/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin"
+        QUARTUS_ROOTDIR = "/home/intel/FGPA_pro/24.2/quartus"
+        REPO_URL = "https://github.com/intel-collab/os.rtos.fpga.freertos.git%27"
+        BRANCH = "release/v0.3.0"
+    }
+ 
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh 'rm -rf project && git clone -b ${BRANCH} ${REPO_URL} project'
+                }
+            }
+        }
+ 
+        stage('Set Environment Variables') {
+            steps {
+                script {
+                    sh '''
+                    export PATH=${ARM_TOOLCHAIN_PATH}:$PATH
+                    export PATH=${QUARTUS_ROOTDIR}:$PATH
+                    '''
+                }
+            }
+        }
+ 
+        stage('Build Application') {
+            steps {
+                dir('project') {
+                    sh './build.sh'
+                }
+            }
+        }
+ 
+        stage('Flash the Board') {
+            steps {
+                dir('project') {
+                    sh 'sudo ./flash.sh'
+                }
+            }
+        }
+ 
+        stage('Get Boot Logs') {
+            steps {
+                script {
+                    sh 'dmesg | tail -n 100 > project/boot_log.txt'
+                }
+            }
+        }
+ 
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'project/boot_log.txt', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'project/*.bin', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'project/*.jic', allowEmptyArchive: true
+            }
+        }
+    }
+ 
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
