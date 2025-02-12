@@ -1,69 +1,99 @@
 pipeline {
     agent any
- 
     environment {
-        ARM_TOOLCHAIN_PATH = "/home/intel6/satheesh/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin"
-        QUARTUS_ROOTDIR = "/home/intel/FGPA_pro/24.2/quartus"
-        REPO_URL = "https://github.com/intel-collab/os.rtos.fpga.freertos.git%27"
-        BRANCH = "release/v0.3.0"
+        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
     }
- 
     stages {
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs() // Clean the workspace before starting the build
+            }
+        }
         stage('Clone Repository') {
             steps {
                 script {
-                    sh 'rm -rf project && git clone -b ${BRANCH} ${REPO_URL} project'
+                    withCredentials([usernamePassword(credentialsId: '79ac05c0-51e0-4e78-9d74-fc030bda2bcc', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git
+                            cd os.rtos.fpga.freertos
+                            git submodule update --init --recursive
+                        '''
+                    }
                 }
             }
         }
- 
-        stage('Set Environment Variables') {
+        stage('List Repository Contents') {
+            steps {
+                script {
+                    sh 'ls -R os.rtos.fpga.freertos'
+                }
+            }
+        }
+        stage('Build Application') {
             steps {
                 script {
                     sh '''
-                    export PATH=${ARM_TOOLCHAIN_PATH}:$PATH
-                    export PATH=${QUARTUS_ROOTDIR}:$PATH
+                        cd os.rtos.fpga.freertos
+                        make
                     '''
                 }
             }
         }
- 
-        stage('Build Application') {
-            steps {
-                dir('project') {
-                    sh './build.sh'
-                }
-            }
-        }
- 
-        stage('Flash the Board') {
-            steps {
-                dir('project') {
-                    sh 'sudo ./flash.sh'
-                }
-            }
-        }
- 
-        stage('Get Boot Logs') {
+        stage('Simulate Flashing') {
             steps {
                 script {
-                    sh 'dmesg | tail -n 100 > project/boot_log.txt'
+                    sh '''
+                        cd /home/intel-ldra/amalia/simics
+                        ./make_rtos_simics.sh
+                    '''
                 }
             }
         }
- 
-        stage('Archive Results') {
+        stage('Run Simulation') {
             steps {
-                archiveArtifacts artifacts: 'project/boot_log.txt', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'project/*.bin', allowEmptyArchive: true
-                archiveArtifacts artifacts: 'project/*.jic', allowEmptyArchive: true
+                script {
+                    sh '''
+                        cd /home/intel-ldra/amalia/simics/deploy
+                        /home/intel-ldra/amalia/simics/deploy/simics /home/intel-ldra/amalia/simics/zephyr.simics
+                    '''
+                }
             }
         }
-    }
- 
-    post {
-        always {
-            cleanWs()
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+        stage('Run Python Script for Boot Log and Test Results') {
+            steps {
+                script {
+                    sh '''
+                        cd /home/intel-ldra/amalia/sample_tests
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial  # Ensure pyserial is installed for the user
+                        python3 sample_main.py > ${WORKSPACE}/test_results.txt  # Redirect output to a file
+                    '''
+                }
+            }
+        }
+        stage('Save Results') {
+            steps {
+                script {
+                    // Copy boot_log.txt to the Jenkins workspace
+                    sh '''
+                        cp "/home/intel-ldra/amalia/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                    '''
+                }
+                // Archive both boot_log.txt and test_results.txt
+                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+            }
         }
     }
 }
