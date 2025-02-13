@@ -28,7 +28,10 @@ pipeline {
         stage('List Repository Contents') {
             steps {
                 script {
-                    sh 'ls -R os.rtos.fpga.freertos'
+                    sh '''
+                        cd Jenkins/os.rtos.fpga.freertos
+                        ls -R os.rtos.fpga.freertos
+                    '''
                 }
             }
         }
