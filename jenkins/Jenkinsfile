@@ -83,7 +83,7 @@ pipeline {
                         cd ${WORKSPACE_PATH}/automation_scripts/sample_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
-                        python3 sample_main.py > ${WORKSPACE_PATH}/test_results.txt  
+                        python3 timer_sample_test.py > ${WORKSPACE_PATH}/test_results.txt  
                     '''
                 }
             }
