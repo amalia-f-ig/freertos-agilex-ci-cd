@@ -39,7 +39,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}
-                        ls -R os.rtos.fpga.freertos
+                        ls -R
                     '''
                 }
             }
