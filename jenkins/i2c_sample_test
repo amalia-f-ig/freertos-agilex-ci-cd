@@ -51,16 +51,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Simulation') {
-            steps {
-                script {
-                    sh '''
-                        cd /home/intel-ldra/amalia/simics/deploy
-                        /home/intel-ldra/amalia/simics/deploy/simics /home/intel-ldra/amalia/simics/zephyr.simics
-                    '''
-                }
-            }
-        }
+    
         stage('Check Python Version and Installed Packages') {
             steps {
                 script {
@@ -71,7 +62,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Python Script for Boot Log and Test Results') {
+        stage('Run Python Script (Run Simulation , generate Boot Log and Test Results') {
             steps {
                 script {
                     sh '''
