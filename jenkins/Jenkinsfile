@@ -49,6 +49,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}
+                        git restore .
                         patch -p1 --force < ../patches/simics.patch
                         make APP=samples clean
                         make APP=samples
