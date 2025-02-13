@@ -54,16 +54,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Simulation') {
-            steps {
-                script {
-                    sh '''
-                        cd deploy
-                        ./simics ../zephyr.simics
-                    '''
-                }
-            }
-        }
+      
         stage('Check Python Version and Installed Packages') {
             steps {
                 script {
