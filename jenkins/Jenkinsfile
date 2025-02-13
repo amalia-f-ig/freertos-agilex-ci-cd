@@ -107,7 +107,8 @@ pipeline {
                 ls -l ${WORKSPACE_PATH}/
             '''
         }
-        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+        archiveArtifacts artifacts: '/home/intel-ldra/Jenkins/boot_log.txt, /home/intel-ldra/Jenkins/test_results.txt', fingerprint: true
+
     }
 }
 
