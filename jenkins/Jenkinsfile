@@ -92,22 +92,10 @@ pipeline {
     steps {
         script {
             sh '''
-                echo "Checking for boot_log.txt in ${WORKSPACE_PATH}/simics/deploy/"
-                ls -l ${WORKSPACE_PATH}/simics/deploy/
-
-                if [ -f "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" ]; then
-                    echo "boot_log.txt found. Copying..."
-                    cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE_PATH}/"
-                else
-                    echo "ERROR: boot_log.txt not found!"
-                    exit 1
-                fi
-
-                echo "Checking if boot_log.txt exists in ${WORKSPACE_PATH}/"
-                ls -l ${WORKSPACE_PATH}/
-            '''
+                    cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                '''
         }
-        archiveArtifacts artifacts: '/home/intel-ldra/Jenkins/boot_log.txt, /home/intel-ldra/Jenkins/test_results.txt', fingerprint: true
+        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
 
     }
 }
