@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ../simics
+                        cd ${WORKSPACE_PATH}/simics
                         ./make_rtos_simics.sh
                     '''
                 }
@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ../../automation_scripts/sample_tests
+                        cd ${WORKSPACE_PATH}/automation_scripts/sample_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
                         python3 sample_main.py > ${WORKSPACE_PATH}/test_results.txt  
@@ -93,7 +93,7 @@ pipeline {
                 script {
                     // Copy boot_log.txt to the Jenkins workspace
                     sh '''
-                        cp "../simics/deploy/boot_log.txt" "${WORKSPACE_PATH}/"
+                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE_PATH}/"
                     '''
                 }
                 // Archive both boot_log.txt and test_results.txt
