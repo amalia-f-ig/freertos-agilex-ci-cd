@@ -13,17 +13,18 @@ pipeline {
         }
         stage('Clone Repository') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: '79ac05c0-51e0-4e78-9d74-fc030bda2bcc', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh '''
-                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git
-                            cd os.rtos.fpga.freertos
-                            git submodule update --init --recursive
-                        '''
-                    }
+            script {
+                withCredentials([usernamePassword(credentialsId: '79ac05c0-51e0-4e78-9d74-fc030bda2bcc', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    sh '''
+                        git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git /home/intel-ldra/Jenkins/os.rtos.fpga.freertos
+                        cd /home/intel-ldra/Jenkins/os.rtos.fpga.freertos
+                        git submodule update --init --recursive
+                    '''
                 }
             }
         }
+    }
+
         stage('List Repository Contents') {
             steps {
                 script {
@@ -36,7 +37,9 @@ pipeline {
                 script {
                     sh '''
                         cd os.rtos.fpga.freertos
-                        make
+                        patch -p1 --force < ../patches/simics.patch
+                        make APP=samples clean
+                        make APP=samples
                     '''
                 }
             }
@@ -45,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd /home/intel-ldra/amalia/simics
+                        cd ../simics
                         ./make_rtos_simics.sh
                     '''
                 }
@@ -55,8 +58,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd /home/intel-ldra/amalia/simics/deploy
-                        /home/intel-ldra/amalia/simics/deploy/simics /home/intel-ldra/amalia/simics/zephyr.simics
+                        cd deploy
+                        ./simics ../zephyr.simics
                     '''
                 }
             }
@@ -75,10 +78,10 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd /home/intel-ldra/amalia/sample_tests
+                        cd ../../automation_scripts/sample_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  # Ensure pyserial is installed for the user
-                        python3 sample_main.py > ${WORKSPACE}/test_results.txt  # Redirect output to a file
+                        python3 sample_main.py > ${WORKSPACE}/test_results.txt  
                     '''
                 }
             }
@@ -88,7 +91,7 @@ pipeline {
                 script {
                     // Copy boot_log.txt to the Jenkins workspace
                     sh '''
-                        cp "/home/intel-ldra/amalia/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                        cp "../simics/deploy/boot_log.txt" "${WORKSPACE}/"
                     '''
                 }
                 // Archive both boot_log.txt and test_results.txt
