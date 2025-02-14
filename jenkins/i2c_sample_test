@@ -1,9 +1,6 @@
 pipeline {
     agent any
     
-    parameters {
-        string(name: 'i2c')
-    }
 
     environment {
         QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
@@ -11,6 +8,7 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins" 
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
+        TEST_BLOCK="i2c"
     }
     stages {
         stage('Pre-clone Cleanup') {
