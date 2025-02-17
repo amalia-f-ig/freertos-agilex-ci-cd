@@ -90,7 +90,7 @@ pipeline {
                         cd ${WORKSPACE_PATH}/automation_scripts/driver_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
-                        python3 timer_dma_wdt_tests.py > ${WORKSPACE}/test_results.txt
+                        python3 driver_tests.py > ${WORKSPACE}/test_results.txt
                     '''
                 }
             }
