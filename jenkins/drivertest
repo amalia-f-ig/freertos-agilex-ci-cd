@@ -88,12 +88,9 @@ pipeline {
                         cd ${WORKSPACE_PATH}/automation_scripts/driver_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
-
-                        echo "Running Python Test Script..."
                         python3 timer_dma_wdt_tests.py > ${WORKSPACE}/test_results.txt  
                 
-                        echo "Test script finished execution."
-                        ls -lah ${WORKSPACE}/test_results.txt
+                       
                     '''
                 }
             }
