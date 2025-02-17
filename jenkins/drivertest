@@ -8,7 +8,7 @@ pipeline {
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         TEST_BLOCK = "i2c"
-        PATCH = "${WORKSPACE_PATH}/PATCHES/simics.patch"
+        PATCH = "${WORKSPACE_PATH}/patches/simics.patch"
     }
     stages {
         stage('Pre-clone Cleanup') {
