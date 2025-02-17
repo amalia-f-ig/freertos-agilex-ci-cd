@@ -1,0 +1,110 @@
+pipeline {
+    agent any
+
+    environment {
+        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
+        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
+        TEST_BLOCK = "i2c"
+        PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
+    }
+    stages {
+        stage('Pre-clone Cleanup') {
+            steps {
+                script {
+                    sh '''
+                        if [ -d "${REPO_PATH}" ]; then
+                            rm -rf "${REPO_PATH}"
+                        fi
+                    '''
+                }
+            }
+        }
+        stage('Clone Repository') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: '79ac05c0-51e0-4e78-9d74-fc030bda2bcc', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                    '''
+                }
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        make clean
+                        make APP=drivertests clean
+                        make APP=drivertests
+                    '''
+                }
+            }
+        }
+
+        stage('Simulate Flashing') {
+            steps {
+                script {
+                    sh '''
+                        cd ${WORKSPACE_PATH}/simics
+                        ./make_rtos_simics.sh
+                    '''
+                }
+            }
+        }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+
+        stage('Run Python Script for Boot Log and Test Results') {
+            steps {
+                script {
+                    sh '''
+                        cd ${WORKSPACE_PATH}/automation_scripts/driver_tests
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial  
+                        python3 uart_driver_test.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Save Results') {
+            steps {
+                script {
+                    sh '''
+                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                    '''
+                }
+                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+            }
+        }
+    }
+}
