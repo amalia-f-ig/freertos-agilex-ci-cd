@@ -103,7 +103,7 @@ pipeline {
                         cd ${WORKSPACE_PATH}/automation_scripts/driver_tests
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
-                        python3 uart_driver_test.py > ${WORKSPACE}/test_results.txt
+                        python3 uart_driver_test_thread.py > ${WORKSPACE}/test_results.txt
                     '''
                 }
             }
