@@ -10,7 +10,18 @@ pipeline {
         TEST_BLOCK = "i2c"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
     }
-    stages {
+    stages 
+        stage('Test Sudo') {
+            steps {
+                script {
+                    sh '''
+                        sudo whoami
+                    '''
+                }
+            }
+        }
+
+
         stage('Pre-clone Cleanup') {
             steps {
                 script {
