@@ -18,6 +18,7 @@ pipeline {
                         if [ -d "${REPO_PATH}" ]; then
                             chmod -R 777 "${REPO_PATH}"
                             rm -rf "${REPO_PATH}"
+                            ls ${WORKSPACE_PATH}
                         fi
                     '''
                 }
