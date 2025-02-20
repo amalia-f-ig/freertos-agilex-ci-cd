@@ -11,7 +11,9 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins" 
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-    }
+        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/sample_tests"
+        TEST_BLOCK="timer"
+   }
     stages {
         stage('Pre-clone Cleanup') {
             steps {
@@ -85,10 +87,10 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${WORKSPACE_PATH}/automation_scripts/sample_tests
+                        cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
-                        python3 timer_sample_test.py ${TEST_BLOCK}> ${WORKSPACE}/test_results.txt  
+                        python3 sample_main.py ${TEST_BLOCK}> ${WORKSPACE}/test_results.txt  
                     '''
                 }
             }

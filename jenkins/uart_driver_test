@@ -7,20 +7,10 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-        TEST_BLOCK = "i2c"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
+        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
     }
     stages {
-        stage('Test Sudo') {
-            steps {
-                script {
-                    sh '''
-                        sudo whoami
-                    '''
-                }
-            }
-        }
-
 
         stage('Pre-clone Cleanup') {
             steps {
@@ -100,7 +90,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${WORKSPACE_PATH}/automation_scripts/driver_tests
+                        cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
                         python3 uart_driver_test.py > ${WORKSPACE}/test_results.txt
