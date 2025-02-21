@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        QUARTUS_ROOTDIR = '/home/ignitarium/intelFPGA_pro/24.2/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/ignitarium/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        WORKSPACE_PATH = "/home/ignitarium/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
-        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
+        SCRIPT_PATH = "/home/ignitarium/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
     }
     stages {
 
