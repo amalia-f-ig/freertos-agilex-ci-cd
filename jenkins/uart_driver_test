@@ -9,7 +9,7 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
         SCRIPT_REPO = "/home/ignitarium/Jenkins/freertos-test-automation"
-        SCRIPT_PATH = "/jenkins_scripts/sample_tests"
+        SCRIPT_PATH = "/jenkins_scripts/driver_tests"
     }
     stages {
 
