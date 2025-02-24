@@ -93,6 +93,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_REPO}
                         ls -ld
+                        git config --global --add safe.directory /home/ignitarium/Jenkins/freertos-test-automation
                         git checkout ci-cd-ignitarium
                         git status
                         cd ${SCRIPT_PATH}
