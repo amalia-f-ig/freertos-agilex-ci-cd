@@ -8,7 +8,8 @@ pipeline {
         WORKSPACE_PATH = "/home/ignitarium/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
-        SCRIPT_PATH = "/home/ignitarium/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
+        SCRIPT_REPO = "/home/ignitarium/Jenkins/freertos-test-automation"
+        SCRIPT_PATH = "/jenkins_scripts/sample_tests"
     }
     stages {
 
@@ -90,7 +91,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        git checkout feature
+                        cd ${SCRIPT_REPO}
+                        git checkout ci-cd-ignitarium
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
