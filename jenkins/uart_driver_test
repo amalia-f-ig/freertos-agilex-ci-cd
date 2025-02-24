@@ -9,7 +9,7 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
         SCRIPT_REPO = "/home/ignitarium/Jenkins/freertos-test-automation"
-        SCRIPT_PATH = "/jenkins_scripts/driver_tests"
+        SCRIPT_PATH = "/home/ignitarium/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
     }
     stages {
 
@@ -91,11 +91,11 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_REPO}
-                        ls -ld
-                        git config --global --add safe.directory /home/ignitarium/Jenkins/freertos-test-automation
-                        git checkout ci-cd-ignitarium
-                        git status
+                        // cd ${SCRIPT_REPO}
+                        // ls -ld
+                        // git config --global --add safe.directory /home/ignitarium/Jenkins/freertos-test-automation
+                        // git checkout ci-cd-ignitarium
+                        // git status
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
