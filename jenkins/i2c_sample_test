@@ -10,7 +10,7 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         TEST_BLOCK="i2c"
         SCRIPT_REPO = "/home/ignitarium/Jenkins/freertos-test-automation"
-        SCRIPT_PATH = "/jenkins_scripts/sample_tests"
+        SCRIPT_PATH = "/home/ignitarium/Jenkins/freertos-test-automation/jenkins_scripts/sample_tests"
     }
     stages {
         stage('Pre-clone Cleanup') {
@@ -85,8 +85,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_REPO}
-                        git checkout ci-cd-ignitarium
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  

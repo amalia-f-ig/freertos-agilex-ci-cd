@@ -87,8 +87,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${WORKSPACE_PATH}
-                        git checkout feature
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
