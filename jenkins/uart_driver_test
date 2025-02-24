@@ -91,11 +91,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        // cd ${SCRIPT_REPO}
-                        // ls -ld
-                        // git config --global --add safe.directory /home/ignitarium/Jenkins/freertos-test-automation
-                        // git checkout ci-cd-ignitarium
-                        // git status
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial  
