@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         QUARTUS_ROOTDIR = '/home/ignitarium/intelFPGA_pro/24.2/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/ignitarium/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        ARM_GNU_TOOLCHAIN = '/home/ignitarium/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/ignitarium/Jenkins" 
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
