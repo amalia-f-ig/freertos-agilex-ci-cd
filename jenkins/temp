@@ -5,11 +5,11 @@ pipeline {
         QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.3/quartus'
         ARM_GNU_TOOLCHAIN = '/home/intel-ldra/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        WORKSPACE_PATH = "/home/intel-ldra/Zephyr_ATF_golden_ref_NAND"
-        REPO_PATH = "${WORKSPACE_PATH}/freertos-test-automation"
+        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
         SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
-        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
     }
     stages {
 
@@ -31,7 +31,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: '5b146b49-4681-43a5-9acd-c4fa34e140e7', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh '''
-                            git clone --branch PDK_control_script https://${GIT_USER}:${GIT_PASS}@git@gitlabkochi.ignitarium.in:agilex_freertos/freertos-test-automation.git ${REPO_PATH}
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
                             git submodule update --init --recursive
                         '''
@@ -40,39 +40,66 @@ pipeline {
             }
         }
         
-
-        stage('Switch Device Mode') {
+        stage('Apply Patch') {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_PATH}
-                        pdk_control.py > ${WORKSPACE}/test_results.txt
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
                     '''
                 }
             }
         }
 
-        stage('Generate JIC image') {
+        stage('Build Application') {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_PATH}
-                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt
+                        cd ${REPO_PATH}
+                        make clean
+                        make APP=drivertests clean
+                        make APP=drivertests
                     '''
                 }
             }
         }
 
-        stage('Power cycle device') {
+        stage('Simulate Flashing') {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_PATH}
-                        python3 power_cycle.py > ${WORKSPACE}/test_results.txt
+                        cd ${WORKSPACE_PATH}/simics
+                        ./make_rtos_simics.sh
                     '''
                 }
             }
         }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+
+        stage('Run Python Script for Boot Log and Test Results') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial  
+                        python3 uart_driver_test.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
         stage('Save Results') {
             steps {
                 script {
