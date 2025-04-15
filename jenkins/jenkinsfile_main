@@ -1,0 +1,99 @@
+pipeline {
+    agent any
+
+    environment {
+        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.3/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
+        WORKSPACE_PATH = "/home/intel-ldra/Zephyr_ATF_golden_ref_NAND"
+        REPO_PATH = "${WORKSPACE_PATH}/freertos-test-automation"
+        SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
+        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
+    }
+    stages {
+        stage('Pre-clone Cleanup') {
+            steps {
+                script {
+                    sh '''
+                        if [ -d "${REPO_PATH}" ]; then
+                            chmod -R 777 "${REPO_PATH}"
+                            rm -rf "${REPO_PATH}"
+                            ls ${WORKSPACE_PATH}
+                        fi
+                    '''
+                }
+            }
+        }
+        stage('Clone Repository') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: '5b146b49-4681-43a5-9acd-c4fa34e140e7', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch PDK_control_script https://${GIT_USER}:${GIT_PASS}@git@gitlabkochi.ignitarium.in:agilex_freertos/freertos-test-automation.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Build Binaries') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        make clean
+                        make
+                        '''
+                }
+            }
+        }
+        
+        stage('Switch Device Mode') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        pdk_control.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Generate JIC image') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Power cycle device') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        python3 power_cycle.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
+
+
+        stage('Save Results') {
+            steps {
+                script {
+                    sh '''
+                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                    '''
+                }
+                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+            }
+        }
+    }
+}
