@@ -32,7 +32,8 @@ pipeline {
                     cd ${REPO_PATH}
                    git submodule update --init --recursive
                 '''
-                }       
+                }  
+                }     
             }
         }
 
