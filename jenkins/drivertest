@@ -24,17 +24,16 @@ pipeline {
         }
         stage('Clone Repository') {
             steps {
-                script {    
-                withCredentials([sshUserPrivateKey(credentialsId: 'ae9b07c2-022c-4a7d-b09d-f098df407ca1', keyFileVariable: 'SSH_KEY')]) {
-                sh """
-                    echo "Cloning repo with SSH key: \$SSH_KEY"
-                    GIT_SSH_COMMAND="ssh -i $SSH_KEY -o StrictHostKeyChecking=no" \
-                    git clone --branch release/v0.3.0 git@github.com:intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
-                    cd ${REPO_PATH}
-                   git submodule update --init --recursive
-                """
-                }  
-                }     
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
+                }
+    
             }
         }
 
