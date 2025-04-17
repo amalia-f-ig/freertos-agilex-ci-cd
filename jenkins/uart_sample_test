@@ -8,7 +8,8 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins" 
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-        TEST_BLOCK="timer"
+        PATCH = "${WORKSPACE_PATH}/patches/uart_sample_test.patch"
+        TEST_BLOCK="uart"
         SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/sample_tests"
     }
     stages {
@@ -38,16 +39,18 @@ pipeline {
             }
         }
         
-        stage('List Repository Contents') {
+       stage('Apply Patch') {
             steps {
                 script {
                     sh '''
                         cd ${REPO_PATH}
-                        ls -R
+                        git restore .
+                        patch -p1 --force < ${PATCH}
                     '''
                 }
             }
         }
+
         stage('Build Application') {
             steps {
                 script {
