@@ -8,8 +8,8 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins" 
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-        PATCH = "${WORKSPACE_PATH}/patches/dma_sample_test.patch"
-        TEST_BLOCK="dma"
+        PATCH = "${WORKSPACE_PATH}/patches/wdt_sample_test.patch"
+        TEST_BLOCK="wdt"
         SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/sample_tests"
     }
     stages {
