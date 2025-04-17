@@ -27,11 +27,9 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh '''
-                            git clone --branch release/v0.3.0 https://gitlabkochi.ignitarium.in/agilex_freertos/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
                             git submodule update --init --recursive
-                            cd ..
-                            git clone --branch PDK_control_script https://${GIT_USER}:${GIT_PASS}@git@gitlabkochi.ignitarium.in:agilex_freertos/freertos-test-automation.git ${SCRIPT_REPO}
                         '''
                     }
                 }
