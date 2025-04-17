@@ -83,7 +83,6 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
-                        export PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
                         echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
                         python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
@@ -97,7 +96,6 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
-                        export PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
                         echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
                         python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
