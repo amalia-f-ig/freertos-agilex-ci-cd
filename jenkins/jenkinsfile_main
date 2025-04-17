@@ -50,15 +50,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
         
         stage('Switch Device Mode') {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_REPO}
-                        git restore .
-                        git checkout PDK_control_script
                         cd ${SCRIPT_PATH}
+                        export PYTHONUSERBASE=$HOME/.local
                         python3 pdk_control.py > ${WORKSPACE}/test_results.txt
                     '''
                 }
