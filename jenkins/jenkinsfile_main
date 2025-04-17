@@ -18,6 +18,8 @@ pipeline {
                         if [ -d "${REPO_PATH}" ]; then
                             rm -rf "${REPO_PATH}"
                         fi
+                        rm -f "${WORKSPACE}/test_results.txt"
+                        rm -f "${WORKSPACE}/boot_log.txt"
                     '''
                 }
             }
@@ -68,7 +70,8 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
-                        python3 pdk_control.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -79,7 +82,8 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
+                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -90,7 +94,8 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        python3 power_cycle.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
+                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -109,4 +114,10 @@ pipeline {
             }
         }
     }
+    post {
+    always {
+        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+    }
+}
+
 }
