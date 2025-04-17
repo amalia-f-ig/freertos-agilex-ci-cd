@@ -55,8 +55,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_PATH}
+                        cd ${SCRIPT_REPO}
                         git checkout PDK_control_script
+                        cd ${SCRIPT_PATH}
                         python3 pdk_control.py > ${WORKSPACE}/test_results.txt
                     '''
                 }
