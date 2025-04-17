@@ -71,7 +71,7 @@ pipeline {
                         cd ${SCRIPT_PATH}
                         export PYTHONUSERBASE=$HOME/.local
                         echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
-                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt 2>&1
+                        python3 pdk_control.py > ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -82,6 +82,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
+                        export PYTHONUSERBASE=$HOME/.local
                         echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
                         python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
@@ -94,6 +95,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
+                        export PYTHONUSERBASE=$HOME/.local
                         echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
                         python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
