@@ -73,6 +73,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Run Python Automation Script') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        python3 uart_log.py > ${WORKSPACE}/test_results.txt
+                    '''
+                }
+            }
+        }
+
         stage('Save Results') {
             steps {
                 script {
