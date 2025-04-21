@@ -1,0 +1,134 @@
+pipeline {
+    agent any
+
+    environment {
+        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
+        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
+        SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
+        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
+    }
+    stages {
+        stage('Pre-clone Cleanup') {
+            steps {
+                script {
+                    sh '''
+                        if [ -d "${REPO_PATH}" ]; then
+                            rm -rf "${REPO_PATH}"
+                        fi
+                        rm -f "${WORKSPACE}/test_results.txt"
+                        rm -f "${WORKSPACE}/boot_log.txt"
+                    '''
+                }
+            }
+        }
+        stage('Clone Repositories') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
+                }
+            }
+        }
+
+
+
+        
+        stage('Build Binaries') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        make clean
+                        make
+                        '''
+                }
+            }
+        }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+        
+        stage('Switch Device Mode') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        python3 pdk_control.py > ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+        stage('Generate JIC image') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
+                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+        stage('Power cycle device') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
+                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+    stage('Run python automation script') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial 
+                        python3 uart_log.py >> ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+        stage('Save Results') {
+            steps {
+                script {
+                    sh '''
+                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                    '''
+                }
+                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+            }
+        }
+    }
+    post {
+    always {
+        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+    }
+}
+
+}
