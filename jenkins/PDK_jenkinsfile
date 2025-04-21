@@ -2,36 +2,34 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.3/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        WORKSPACE_PATH = "/home/intel-ldra/Zephyr_ATF_golden_ref_NAND"
-        REPO_PATH = "${WORKSPACE_PATH}/freertos-test-automation"
-        PATCH = "${WORKSPACE_PATH}/patches/uart_driver_test.patch"
+        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
         SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
     }
     stages {
-
         stage('Pre-clone Cleanup') {
             steps {
                 script {
                     sh '''
                         if [ -d "${REPO_PATH}" ]; then
-                            chmod -R 777 "${REPO_PATH}"
                             rm -rf "${REPO_PATH}"
-                            ls ${WORKSPACE_PATH}
                         fi
+                        rm -f "${WORKSPACE}/test_results.txt"
+                        rm -f "${WORKSPACE}/boot_log.txt"
                     '''
                 }
             }
         }
-        stage('Clone Repository') {
+        stage('Clone Repositories') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: '5b146b49-4681-43a5-9acd-c4fa34e140e7', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh '''
-                            git clone --branch PDK_control_script https://${GIT_USER}:${GIT_PASS}@git@gitlabkochi.ignitarium.in:agilex_freertos/freertos-test-automation.git ${REPO_PATH}
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
                             git submodule update --init --recursive
                         '''
@@ -39,14 +37,41 @@ pipeline {
                 }
             }
         }
-        
 
+
+
+        
+        stage('Build Binaries') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        make clean
+                        make APP=drivertests clean
+                        make APP=drivertests
+                        '''
+                }
+            }
+        }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+        
         stage('Switch Device Mode') {
             steps {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        pdk_control.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        python3 pdk_control.py > ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -57,7 +82,8 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        python3 generate_jic_image.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
+                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -68,18 +94,22 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        python3 power_cycle.py > ${WORKSPACE}/test_results.txt
+                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
+                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
         }
 
-        stage('Run Python Automation Script') {
+    stage('Run python automation script') {
             steps {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        python3 uart_log.py > ${WORKSPACE}/test_results.txt
+                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial 
+                        python3 uart_log.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -96,4 +126,10 @@ pipeline {
             }
         }
     }
+    post {
+    always {
+        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+    }
+}
+
 }
