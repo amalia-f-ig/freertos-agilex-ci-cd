@@ -9,6 +9,7 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
         SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
     }
     stages {
         stage('Pre-clone Cleanup') {
@@ -104,7 +105,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${SCRIPT_PATH}
+                        cd ${AUTOMATION_SCRIPT}
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
