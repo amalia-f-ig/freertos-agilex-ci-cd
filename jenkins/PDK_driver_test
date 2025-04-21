@@ -26,9 +26,7 @@ pipeline {
         }
         stage('Clone Repositories') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh '''
+             This job clones the repositories, build the application, run the PDK scripts to make JIC image, flash and power cycle and also saves the result.            sh '''
                             git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
                             git submodule update --init --recursive
@@ -119,7 +117,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
+                        cp "${WORKSPACE_PATH}/boot_log.txt" "${WORKSPACE}/"
                     '''
                 }
                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
