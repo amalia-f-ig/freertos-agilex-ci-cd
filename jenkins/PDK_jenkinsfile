@@ -7,9 +7,9 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-        SCRIPT_REPO = "/home/intel-ldra/Jenkins/freertos-test-automation"
-        SCRIPT_PATH = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
+        SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        AUTOMATION_SCRIPT = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
     }
     stages {
         stage('Pre-clone Cleanup') {
