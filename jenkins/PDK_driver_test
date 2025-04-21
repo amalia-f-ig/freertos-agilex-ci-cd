@@ -108,7 +108,7 @@ pipeline {
                         cd ${SCRIPT_PATH}
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
-                        python3 -m pip3 install --user pyserial 
+                        python3 -m pip install --user pyserial 
                         python3 driver_test.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
