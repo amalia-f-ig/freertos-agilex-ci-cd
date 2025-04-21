@@ -10,6 +10,7 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
+        PATCH = "${WORKSPACE_PATH}/patches/pdk_driver_tests.patch"
     }
     stages {
         stage('Pre-clone Cleanup') {
@@ -39,7 +40,17 @@ pipeline {
             }
         }
 
-
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                    '''
+                }
+            }
+        }
 
         
         stage('Build Binaries') {
