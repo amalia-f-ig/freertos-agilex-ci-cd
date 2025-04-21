@@ -47,8 +47,7 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}
                         make clean
-                        make APP=drivertests clean
-                        make APP=drivertests
+                        make 
                         '''
                 }
             }
