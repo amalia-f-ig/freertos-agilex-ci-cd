@@ -106,8 +106,6 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
-                        export PYTHONUSERBASE=$HOME/.local
-                        python3 -m pip install --user pyserial 
                         python3 uart_log.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
@@ -116,11 +114,6 @@ pipeline {
 
         stage('Save Results') {
             steps {
-                script {
-                    sh '''
-                        cp "${WORKSPACE_PATH}/boot_log.txt" "${WORKSPACE}/"
-                    '''
-                }
                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
             }
         }
