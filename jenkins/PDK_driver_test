@@ -117,11 +117,6 @@ pipeline {
 
         stage('Save Results') {
             steps {
-                script {
-                    sh '''
-                        cp "${WORKSPACE_PATH}/simics/deploy/boot_log.txt" "${WORKSPACE}/"
-                    '''
-                }
                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
             }
         }
