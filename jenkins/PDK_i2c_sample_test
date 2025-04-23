@@ -84,7 +84,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo -e "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
-                        python3 pdk_control.py > ${WORKSPACE}/test_results.txt 2>&1
+                        python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
@@ -122,7 +122,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 sample_main.py ${TEST_BLOCK}> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 sample_main.py ${TEST_BLOCK}>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
