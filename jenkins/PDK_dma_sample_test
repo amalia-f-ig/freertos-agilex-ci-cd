@@ -10,7 +10,6 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/sample_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/pdk_dma_sample_test.patch"
         TEST_BLOCK="dma"
     }
     stages {
@@ -37,18 +36,6 @@ pipeline {
                             git submodule update --init --recursive
                         '''
                     }
-                }
-            }
-        }
-
-        stage('Apply Patch') {
-            steps {
-                script {
-                    sh '''
-                        cd ${REPO_PATH}
-                        git restore .
-                        patch -p1 --force < ${PATCH}
-                    '''
                 }
             }
         }
