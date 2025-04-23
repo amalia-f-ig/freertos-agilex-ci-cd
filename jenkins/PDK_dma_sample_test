@@ -9,9 +9,9 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/pdk_uart_driver_tests.patch"
-    }
+        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/sample_tests"
+        PATCH = "${WORKSPACE_PATH}/patches/pdk_dma_sample_test.patch"
+        TEST_BLOCK="dma"
     }
     stages {
         stage('Pre-clone Cleanup') {
@@ -52,6 +52,7 @@ pipeline {
                 }
             }
         }
+
         
         stage('Build Binaries') {
             steps {
@@ -59,8 +60,8 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}
                         make clean
-                        make APP=drivertests clean
-                        make APP=drivertests
+                        make APP=samples clean
+                        make APP=samples
                         '''
                 }
             }
@@ -82,7 +83,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        echo -e "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
                         python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
@@ -121,7 +122,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 uart_driver_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 sample_main.py ${TEST_BLOCK}>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
