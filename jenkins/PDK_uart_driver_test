@@ -12,7 +12,6 @@ pipeline {
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/pdk_uart_driver_tests.patch"
     }
-    }
     stages {
         stage('Pre-clone Cleanup') {
             steps {
@@ -138,5 +137,4 @@ pipeline {
         archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
     }
 }
-
 }
