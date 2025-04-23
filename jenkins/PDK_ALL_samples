@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('TIMER Sample Test') {
+            steps {
+                build job: 'PDK Timer Sample Test', wait: true
+            }
+        }
+
+        stage('DMA Sample Test') {
+            steps {
+                build job: 'PDK Timer Sample Test', wait: true
+            }
+        }
+
+        stage('I2C Sample Test') {
+            steps {
+                build job: 'PDK Timer Sample Test', wait: true
+            }
+        }
+        
+        stage('WDT Sample Test') {
+            steps {
+                build job: 'PDK Timer Sample Test', wait: true
+            }
+        }
+
+        stage('UART Sample Test') {
+            steps {
+                build job: 'PDK Timer Sample Test', wait: true
+            }
+        }
+    }
+}
