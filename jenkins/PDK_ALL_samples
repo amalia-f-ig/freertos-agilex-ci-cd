@@ -10,25 +10,25 @@ pipeline {
 
         stage('DMA Sample Test') {
             steps {
-                build job: 'PDK Timer Sample Test', wait: true
+                build job: 'PDK DMA Sample Test', wait: true
             }
         }
 
         stage('I2C Sample Test') {
             steps {
-                build job: 'PDK Timer Sample Test', wait: true
+                build job: 'PDK I2C Sample Test', wait: true
             }
         }
-        
+
         stage('WDT Sample Test') {
             steps {
-                build job: 'PDK Timer Sample Test', wait: true
+                build job: 'PDK WDT Sample Test', wait: true
             }
         }
 
         stage('UART Sample Test') {
             steps {
-                build job: 'PDK Timer Sample Test', wait: true
+                build job: 'PDK UART Sample Test', wait: true
             }
         }
     }
