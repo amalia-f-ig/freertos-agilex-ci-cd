@@ -17,13 +17,65 @@ pipeline {
             steps {
                 script {
                     sh '''
+                        if [ -d "${REPO_PATH}" ]; then
+                            rm -rf "${REPO_PATH}"
+                        fi
                         rm -f "${WORKSPACE}/test_results.txt"
                         rm -f "${WORKSPACE}/boot_log.txt"
                     '''
                 }
             }
         }
+        stage('Clone Repositories') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch release/v0.3.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
+                }
+            }
+        }
 
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                    '''
+                }
+            }
+        }
+        
+        stage('Build Binaries') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        make clean
+                        make APP=drivertests clean
+                        make APP=drivertests
+                        '''
+                }
+            }
+        }
+
+        stage('Check Python Version and Installed Packages') {
+            steps {
+                script {
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
+                }
+            }
+        }
+        
         stage('Switch Device Mode') {
             steps {
                 script {

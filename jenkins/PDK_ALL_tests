@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Timer, I2C, WDT, DMA Driver Tests') {
+            steps {
+                build job: 'PDK WDT Sample Test', wait: true
+            }
+        }
+
+        stage('UART Sample Test') {
+            steps {
+                build job: 'PDK UART Sample Test', wait: true
+            }
+        }
+    }
+}
