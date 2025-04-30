@@ -22,6 +22,7 @@ pipeline {
                     sh "mkdir -p ${env.ARTIFACTS_DIR}"
                 }
             }
+        }
 
         stage('Pre-clone Cleanup') {
             steps {
