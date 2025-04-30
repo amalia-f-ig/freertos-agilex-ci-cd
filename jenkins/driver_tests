@@ -13,16 +13,25 @@ pipeline {
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/driver_tests.patch"
     }
     stages {
+        stage('Artifacts Initialization') {
+            steps {
+                script {
+                    env.TIMESTAMP = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
+                    env.ARTIFACTS_DIR = "${env.WORKSPACE_PATH}/artifacts/${env.JOB_NAME}"
+                    env.TEST_RESULTS = "${env.ARTIFACTS_DIR}/test_results_${env.BUILD_NUMBER}_${env.TIMESTAMP}.txt"
+                    sh "mkdir -p ${env.ARTIFACTS_DIR}"
+                }
+            }
+
         stage('Pre-clone Cleanup') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         if [ -d "${REPO_PATH}" ]; then
                             rm -rf "${REPO_PATH}"
                         fi
-                        rm -f "${WORKSPACE}/test_results.txt"
-                        rm -f "${WORKSPACE}/boot_log.txt"
-                    '''
+                        rm -f "${env.TEST_RESULTS}"
+                    """
                 }
             }
         }
@@ -30,11 +39,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh '''
+                        sh """
                             git clone --branch release/v0.5.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
                             git submodule update --init --recursive
-                        '''
+                        """
                     }
                 }
             }
@@ -43,11 +52,11 @@ pipeline {
         stage('Apply Patch') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${REPO_PATH}
                         git restore .
                         patch -p1 --force < ${PATCH}
-                    '''
+                    """
                 }
             }
         }
@@ -56,12 +65,12 @@ pipeline {
         stage('Build Binaries') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${REPO_PATH}
                         make clean
                         make APP=drivertests clean
                         make APP=drivertests
-                        '''
+                        """
                 }
             }
         }
@@ -69,10 +78,10 @@ pipeline {
         stage('Check Python Version and Installed Packages') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         python3 --version
                         python3 -m pip list
-                    '''
+                    """
                 }
             }
         }
@@ -80,11 +89,11 @@ pipeline {
         stage('Switch Device Mode') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
-                        python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                        echo "==== Switch Device Mode ====" >> ${env.TEST_RESULTS}
+                        python3 pdk_control.py >> ${env.TEST_RESULTS} 2>&1
+                    """
                 }
             }
         }
@@ -92,11 +101,11 @@ pipeline {
         stage('Generate JIC image') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
-                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                        echo "==== Generate JIC Image ====" >> ${env.TEST_RESULTS}
+                        python3 generate_jic_image.py >> ${env.TEST_RESULTS} 2>&1
+                    """
                 }
             }
         }
@@ -104,11 +113,11 @@ pipeline {
         stage('Power cycle device') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
-                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                        echo "==== Power Cycle Device ====" >> ${env.TEST_RESULTS}
+                        python3 power_cycle.py >> ${env.TEST_RESULTS} 2>&1
+                    """
                 }
             }
         }
@@ -116,26 +125,26 @@ pipeline {
     stage('Run python automation script') {
             steps {
                 script {
-                    sh '''
+                    sh """
                         cd ${AUTOMATION_SCRIPT}
-                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
+                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${env.TEST_RESULTS}
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 driver_tests.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                        python3 driver_tests.py >> ${env.TEST_RESULTS} 2>&1
+                    """
                 }
             }
         }
 
         stage('Save Results') {
             steps {
-                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+                archiveArtifacts artifacts: "${env.TEST_RESULTS}", fingerprint: true
             }
         }
     }
     post {
     always {
-        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+        archiveArtifacts artifacts: "${env.TEST_RESULTS}", fingerprint: true
     }
 }
 
