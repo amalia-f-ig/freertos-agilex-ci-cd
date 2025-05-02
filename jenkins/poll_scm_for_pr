@@ -1,0 +1,40 @@
+pipeline{
+    agent any
+    stages{
+        stage('Check for PRs') {
+            steps {
+                script {
+                    def result = sh(script: 'gh pr list --base development --state open', returnStdout: true).trim()
+                    if (result) {
+                        echo "Open PRs found to development:"
+                        echo result
+                    } else {
+                        echo "No open PRs to development. Skipping build."
+                        currentBuild.result = 'NOT_BUILT'
+                        error("No PRs")
+                    }
+                }
+            }
+        }
+
+        stage('Building : Timer, I2C, WDT, DMA Driver Tests') {
+            steps {
+                script {
+                    try {
+                        build job: 'Driver Tests/Driver tests - SEU, DMA, TIMER, I3C, QSPI Test', wait: true
+                    } catch (e) {
+                        echo "Driver tests failed: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
+
+        // stage('Building: UART Driver Test') {
+        //     steps {
+        //         build job: ' UART Driver Test', wait: true
+        //     }
+        // }
+    }
+}
