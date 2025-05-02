@@ -96,9 +96,8 @@ pipeline {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${env.TEST_RESULTS}
-                        python3 pdk_control.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
+                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
                     """
                 }
             }
@@ -109,9 +108,8 @@ pipeline {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Generate JIC Image ====" >> ${env.TEST_RESULTS}
-                        python3 generate_jic_image.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
+                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
+                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
                     """
                 }
             }
@@ -122,9 +120,8 @@ pipeline {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
-                        echo "==== Power Cycle Device ====" >> ${env.TEST_RESULTS}
-                        python3 power_cycle.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
+                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
+                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
                     """
                 }
             }
@@ -135,10 +132,10 @@ pipeline {
                 script {
                     sh """
                         cd ${AUTOMATION_SCRIPT}
-                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${env.TEST_RESULTS}
+                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 driver_tests.py >> ${env.TEST_RESULTS} 2>&1
+                        python3 driver_tests.py >> ${WORKSPACE}/test_results.txt 2>&1
                         cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt 
                     """
                 }
@@ -153,6 +150,9 @@ pipeline {
     }
     post {
     always {
+        sh """
+            cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
+            """
         archiveArtifacts artifacts: "test_results.txt", fingerprint: true
     }
 }
