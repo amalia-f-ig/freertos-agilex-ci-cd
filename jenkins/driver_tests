@@ -146,7 +146,7 @@ pipeline {
                     tr="${TEST_RESULTS}_${BUILD_NUMBER}_${TS}.txt"
                     mkdir -p "${ARTIFACTS_DIR}"
                     touch "${tr}"
-                    cp "${WORKSPACE}/test_results.txt" "${tr}"
+                    cp ${WORKSPACE}/test_results.txt "${tr}"
                 '''
             }
         }
