@@ -24,7 +24,7 @@ pipeline{
             steps {
                 script {
                     try {
-                        build job: 'Driver Tests/Driver tests - SEU, DMA, TIMER, I3C, QSPI Test', wait: true
+                        build job: 'Release v0.5.0/Driver Tests/Driver tests - SEU, DMA, TIMER, I3C, QSPI Test', wait: true
                     } catch (e) {
                         echo "Driver tests failed: ${e}"
                         currentBuild.result = 'FAILURE'
