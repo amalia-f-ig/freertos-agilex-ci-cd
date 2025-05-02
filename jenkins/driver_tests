@@ -35,7 +35,7 @@ pipeline {
                             rm -rf "${REPO_PATH}"
                         fi
                         rm -f "${env.TEST_RESULTS}"
-                        rm -f "${WORKSPACE}/test_results.txt"
+                        rm -f "${WORKSPACE_PATH}/test_results.txt"
                     """
                 }
             }
@@ -98,7 +98,7 @@ pipeline {
                         cd ${SCRIPT_PATH}
                         echo "==== Switch Device Mode ====" >> ${env.TEST_RESULTS}
                         python3 pdk_control.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
+                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
                     """
                 }
             }
@@ -111,7 +111,7 @@ pipeline {
                         cd ${SCRIPT_PATH}
                         echo "==== Generate JIC Image ====" >> ${env.TEST_RESULTS}
                         python3 generate_jic_image.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
+                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
                     """
                 }
             }
@@ -124,7 +124,7 @@ pipeline {
                         cd ${SCRIPT_PATH}
                         echo "==== Power Cycle Device ====" >> ${env.TEST_RESULTS}
                         python3 power_cycle.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
+                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt
                     """
                 }
             }
@@ -139,7 +139,7 @@ pipeline {
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
                         python3 driver_tests.py >> ${env.TEST_RESULTS} 2>&1
-                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt 
+                        cp ${env.TEST_RESULTS} ${WORKSPACE_PATH}/test_results.txt 
                     """
                 }
             }
