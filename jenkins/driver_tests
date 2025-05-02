@@ -12,6 +12,8 @@ pipeline {
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/driver_tests.patch"
         FOLDER_NAME = "driver_tests"
+        ARTIFACTS_DIR = "${WORKSPACE_PATH}/artifacts/${FOLDER_NAME}"
+        TEST_RESULTS = "${ARTIFACTS_DIR}/test_results"
     }
     stages {
         stage('Pre-clone Cleanup') {
@@ -138,18 +140,15 @@ pipeline {
     always {
         script {
             def ts = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
-            def artifactsDir = "${env.WORKSPACE}/artifacts/${env.FOLDER_NAME}"  // Use env.WORKSPACE instead of WORKSPACE var
-            def testResults = "${artifactsDir}/test_results_${env.BUILD_NUMBER}_${ts}.txt"
 
-            // Build the shell command as a string
-            def shellCmd = """
-                mkdir -p '${artifactsDir}'
-                touch '${testResults}'
-                cp '${env.WORKSPACE}/test_results.txt' '${testResults}'
-            """
-
-            // Now call sh with that string
-            sh shellCmd
+            withEnv(["TS=${ts}"]) {
+                sh '''
+                    tr="${TEST_RESULTS}_${BUILD_NUMBER}_${TS}.txt"
+                    mkdir -p "${ARTIFACTS_DIR}"
+                    touch "${tr}"
+                    cp "${WORKSPACE}/test_results.txt" "${tr}"
+                '''
+            }
         }
 
         archiveArtifacts artifacts: "test_results.txt", fingerprint: true
