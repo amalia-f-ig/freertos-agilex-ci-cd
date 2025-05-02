@@ -149,16 +149,20 @@ pipeline {
     }
     post {
     always {
-        env.TIMESTAMP = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
-        env.ARTIFACTS_DIR = "${env.WORKSPACE_PATH}/artifacts/${env.FOLDER_NAME}"
-        env.TEST_RESULTS = "${env.ARTIFACTS_DIR}/test_results_${env.BUILD_NUMBER}_${env.TIMESTAMP}.txt"
-        sh '''
-            mkdir -p ${env.ARTIFACTS_DIR}
-            touch ${env.TEST_RESULTS}
-            cp ${WORKSPACE}/test_results.txt ${env.TEST_RESULTS}
-        '''
+        script {
+            def ts = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
+            def artifactsDir = "${env.WORKSPACE_PATH}/artifacts/${env.FOLDER_NAME}"
+            def testResults = "${artifactsDir}/test_results_${env.BUILD_NUMBER}_${ts}.txt"
+
+            sh '''
+                mkdir -p ${artifactsDir}
+                touch ${testResults}
+                cp ${WORKSPACE}/test_results.txt ${testResults}
+            '''
+        }
         archiveArtifacts artifacts: "test_results.txt", fingerprint: true
     }
 }
+
 
 }
