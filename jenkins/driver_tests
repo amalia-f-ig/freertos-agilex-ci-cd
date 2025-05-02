@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        QUARTUS_ROOTDIR = "/home/intel-ldra/intelFPGA_pro/24.2/quartus"
+        ARM_GNU_TOOLCHAIN = "/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin"
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
@@ -14,7 +14,7 @@ pipeline {
         FOLDER_NAME = "driver_tests"
     }
     stages {
-        stage('Artifacts Initialization') {
+        stage("Artifacts Initialization") {
             steps {
                 script {
                     env.TIMESTAMP = new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("UTC"))
@@ -27,7 +27,7 @@ pipeline {
             }
         }
 
-        stage('Pre-clone Cleanup') {
+        stage("Pre-clone Cleanup") {
             steps {
                 script {
                     sh """
@@ -35,14 +35,15 @@ pipeline {
                             rm -rf "${REPO_PATH}"
                         fi
                         rm -f "${env.TEST_RESULTS}"
+                        rm -f "${WORKSPACE}/test_results.txt"
                     """
                 }
             }
         }
-        stage('Clone Repositories') {
+        stage("Clone Repositories") {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: "af6609b7-75a7-43a2-9dfc-a6c45f0f4e44", usernameVariable: "GIT_USER", passwordVariable: "GIT_PASS")]) {
                         sh """
                             git clone --branch release/v0.5.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
                             cd ${REPO_PATH}
@@ -53,7 +54,7 @@ pipeline {
             }
         }
 
-        stage('Apply Patch') {
+        stage("Apply Patch") {
             steps {
                 script {
                     sh """
@@ -66,7 +67,7 @@ pipeline {
         }
 
         
-        stage('Build Binaries') {
+        stage("Build Binaries") {
             steps {
                 script {
                     sh """
@@ -79,7 +80,7 @@ pipeline {
             }
         }
 
-        stage('Check Python Version and Installed Packages') {
+        stage("Check Python Version and Installed Packages") {
             steps {
                 script {
                     sh """
@@ -90,43 +91,46 @@ pipeline {
             }
         }
         
-        stage('Switch Device Mode') {
+        stage("Switch Device Mode") {
             steps {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
                         echo "==== Switch Device Mode ====" >> ${env.TEST_RESULTS}
                         python3 pdk_control.py >> ${env.TEST_RESULTS} 2>&1
+                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
                     """
                 }
             }
         }
 
-        stage('Generate JIC image') {
+        stage("Generate JIC image") {
             steps {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
                         echo "==== Generate JIC Image ====" >> ${env.TEST_RESULTS}
                         python3 generate_jic_image.py >> ${env.TEST_RESULTS} 2>&1
+                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
                     """
                 }
             }
         }
 
-        stage('Power cycle device') {
+        stage("Power cycle device") {
             steps {
                 script {
                     sh """
                         cd ${SCRIPT_PATH}
                         echo "==== Power Cycle Device ====" >> ${env.TEST_RESULTS}
                         python3 power_cycle.py >> ${env.TEST_RESULTS} 2>&1
+                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt
                     """
                 }
             }
         }
 
-    stage('Run python automation script') {
+    stage("Run python automation script") {
             steps {
                 script {
                     sh """
@@ -135,20 +139,21 @@ pipeline {
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
                         python3 driver_tests.py >> ${env.TEST_RESULTS} 2>&1
+                        cp ${env.TEST_RESULTS} ${WORKSPACE}/test_results.txt 
                     """
                 }
             }
         }
 
-        stage('Save Results') {
+        stage("Save Results") {
             steps {
-                archiveArtifacts artifacts: "${env.TEST_RESULTS}", fingerprint: true
+                archiveArtifacts artifacts: "test_results.txt", fingerprint: true
             }
         }
     }
     post {
     always {
-        archiveArtifacts artifacts: "${env.TEST_RESULTS}", fingerprint: true
+        archiveArtifacts artifacts: "test_results.txt", fingerprint: true
     }
 }
 

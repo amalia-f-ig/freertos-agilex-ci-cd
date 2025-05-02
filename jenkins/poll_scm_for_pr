@@ -6,14 +6,27 @@ pipeline{
                 script {
                     withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh 'echo $GIT_PASS | gh auth login --with-token'
-                        def result = sh(script: 'gh pr list --repo https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git --base development --state open', returnStdout: true).trim()
-                        if (result) {
-                            echo "Open PRs found to development:"
-                            echo result
+                        def jsonOutput = sh(
+                            script: "gh pr list --repo https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git --base development --state open --json number,updatedAt,createdAt,title",
+                            returnStdout: true
+                        ).trim()
+
+                        def prs = readJSON text: jsonOutput
+
+                        def now = System.currentTimeMillis()
+
+                        def recentPRs = prs.findAll { pr ->
+                            def updatedTime = java.time.Instant.parse(pr.updatedAt).toEpochMilli()
+                            return (now - updatedTime) <= 15 * 60 * 1000 
+                        }
+
+                        if (recentPRs && !recentPRs.isEmpty()) {
+                            echo "Recent PRs found:"
+                            recentPRs.each { echo "#${it.number}: ${it.title}" }
                         } else {
-                            echo "No open PRs to development. Skipping build."
+                            echo "No new or recently updated PRs. Skipping build."
                             currentBuild.result = 'NOT_BUILT'
-                            error("No PRs")
+                            error("No recent PRs")
                         }
                     }
                 }   
