@@ -4,16 +4,19 @@ pipeline{
         stage('Check for PRs') {
             steps {
                 script {
-                    def result = sh(script: 'gh pr list --base development --state open', returnStdout: true).trim()
-                    if (result) {
-                        echo "Open PRs found to development:"
-                        echo result
-                    } else {
-                        echo "No open PRs to development. Skipping build."
-                        currentBuild.result = 'NOT_BUILT'
-                        error("No PRs")
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh 'echo $GIT_PASS | gh auth login --with-token'
+                        def result = sh(script: 'gh pr list --repo https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git --base development --state open', returnStdout: true).trim()
+                        if (result) {
+                            echo "Open PRs found to development:"
+                            echo result
+                        } else {
+                            echo "No open PRs to development. Skipping build."
+                            currentBuild.result = 'NOT_BUILT'
+                            error("No PRs")
+                        }
                     }
-                }
+                }   
             }
         }
 
