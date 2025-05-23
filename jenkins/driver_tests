@@ -10,7 +10,7 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/releasev5/driver_tests.patch"
+        PATCH = "${WORKSPACE_PATH}/patches/releasev5/timer_test.patch"
         FOLDER_NAME = "driver_tests"
         ARTIFACTS_DIR = "${WORKSPACE_PATH}/artifacts/${FOLDER_NAME}"
         TEST_RESULTS = "${ARTIFACTS_DIR}/test_results"
