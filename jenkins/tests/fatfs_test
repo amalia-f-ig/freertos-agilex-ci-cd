@@ -10,7 +10,7 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/releasev5/usb_driver_test.patch"
+        PATCH = "${WORKSPACE_PATH}/patches/releasev5/fatfs_driver_test.patch"
     }
 
     stages {
@@ -122,7 +122,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 usb_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 fatfs_test.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
