@@ -58,11 +58,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}
+                        cd ${BUILD_PATH}
+                        mkdir -p build
+                        cd build
+                        cmake ../
                         make clean
-                        make APP=drivertests clean
-                        make APP=drivertests
-                        '''
+                        make
+                    '''
                 }
             }
         }

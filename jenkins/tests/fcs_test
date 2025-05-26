@@ -10,7 +10,7 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/releasev5/fcs_driver_test.patch"
+        PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/fcs_test.patch"
     }
 
     stages {
@@ -58,11 +58,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}
+                        cd ${BUILD_PATH}
+                        mkdir -p build
+                        cd build
+                        cmake ../
                         make clean
-                        make APP=drivertests clean
-                        make APP=drivertests
-                        '''
+                        make
+                    '''
                 }
             }
         }
