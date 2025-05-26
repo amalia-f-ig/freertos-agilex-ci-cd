@@ -7,6 +7,7 @@ pipeline {
         PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
+        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
@@ -58,14 +59,17 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}
+                        cd ${BUILD_PATH}
+                        mkdir -p build
+                        cd build
+                        cmake ../
                         make clean
-                        make APP=drivertests clean
-                        make APP=drivertests
-                        '''
+                        make
+                    '''
                 }
             }
         }
+
 
         stage('Check Python Version and Installed Packages') {
             steps {
