@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SSH_USER = 'intel4'
-        SSH_HOST = '192:168:40:24'
+        SSH_HOST = '192.168.40.24'
         REMOTE_PATH = '/home/intel4/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
     }
