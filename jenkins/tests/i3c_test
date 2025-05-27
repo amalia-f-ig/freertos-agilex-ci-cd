@@ -25,12 +25,12 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}
                     git clone --branch release/v0.6.0 git@github.com:intel-collab/os.rtos.fpga.freertos.git
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git submodule update --init --recursive
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -40,11 +40,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git restore .
                     patch -p1 --force < ${PATCH_PATH}
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -54,14 +54,14 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     mkdir -p build && cd build
                     cmake ../
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests/build
                     make clean
                     make
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -71,10 +71,10 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_SCRIPT_PATH}
                     python3 pdk_control.py
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -84,7 +84,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "=== Generating JIC image ==="
                     cd ${REMOTE_SCRIPT_PATH}
@@ -92,7 +92,7 @@ pipeline {
 
                     echo "=== Flashing JIC image ==="
                     ./flash.sh
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -103,10 +103,10 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_SCRIPT_PATH}
                     python3 power_cycle.py
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
@@ -116,13 +116,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
                     python3 i3c_test.py >> ${REMOTE_WORKSPACE}/test_results.txt 2>&1
-                    ENDSSH
+ENDSSH
                     """
                 }
             }
