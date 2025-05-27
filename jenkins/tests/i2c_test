@@ -12,6 +12,12 @@ pipeline {
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/i2c_test.patch"
+
+        PDK_SCRIPT_PATH_4 = "/home/intel4/PDK/scripts"
+        INTEL4_IP = "192.168.0.104"
+        INTEL4_USER = "intel4"
+        JIC_PATH = "${SCRIPT_PATH}/output/output_file.jic"
+
     }
 
     stages {
@@ -81,17 +87,16 @@ pipeline {
             }
         }
         
-        stage('Switch Device Mode') {
+        stage('Switch Device Mode (intel4)') {
             steps {
                 script {
-                    sh '''
-                        cd ${SCRIPT_PATH}
+                    sh """
                         echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
-                        python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                        ssh ${INTEL4_USER}@${INTEL4_IP} 'cd ${PDK_SCRIPT_PATH_4} && python3 pdk_control.py' >> ${WORKSPACE}/test_results.txt 2>&1
+                    """
                 }
             }
-        }
+        }        
 
         stage('Generate JIC image') {
             steps {
@@ -104,6 +109,30 @@ pipeline {
                 }
             }
         }
+
+        stage('Copy JIC to intel4') {
+            steps {
+                script {
+                    sh """
+                        echo "==== Copy JIC to intel4 ====" >> ${WORKSPACE}/test_results.txt
+                        scp ${JIC_PATH} ${INTEL4_USER}@${INTEL4_IP}:${PDK_SCRIPT_PATH_4}/ >> ${WORKSPACE}/test_results.txt 2>&1
+                    """
+                }
+            }
+        }
+
+        stage('Flash JIC on intel4') {
+            steps {
+                script {
+                    sh """
+                        echo "==== Flash JIC on intel4 ====" >> ${WORKSPACE}/test_results.txt
+                        ssh ${INTEL4_USER}@${INTEL4_IP} 'cd ${PDK_SCRIPT_PATH_4} && bash flash.sh' >> ${WORKSPACE}/test_results.txt 2>&1
+                    """
+                }
+            }
+        }
+        
+
 
         stage('Power cycle device') {
             steps {

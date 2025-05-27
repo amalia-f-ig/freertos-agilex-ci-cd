@@ -2,134 +2,143 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel-ldra/intelFPGA_pro/24.2/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        PATH = "${ARM_GNU_TOOLCHAIN}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
-        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
-        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
-        SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
-        SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/i3c_test.patch"
+        SSH_USER = 'intel4'
+        SSH_HOST = '192:168:40:24'
+        REMOTE_PATH = '/home/intel4/Jenkins'
+        REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
     }
 
     stages {
-        stage('Pre-clone Cleanup') {
+
+ stage('Remote: Cleanup') {
             steps {
                 script {
-                    sh '''
-                        if [ -d "${REPO_PATH}" ]; then
-                            rm -rf "${REPO_PATH}"
-                        fi
-                        rm -f "${WORKSPACE}/test_results.txt"
-                        rm -f "${WORKSPACE}/boot_log.txt"
-                    '''
-                }
-            }
-        }
-        stage('Clone Repositories') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh '''
-                            git clone --branch release/v0.6.0 https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
-                            cd ${REPO_PATH}
-                            git submodule update --init --recursive
-                        '''
-                    }
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
+                    """
                 }
             }
         }
 
-        stage('Apply Patch') {
+        stage('Remote: Clone Repository') {
             steps {
                 script {
-                    sh '''
-                        cd ${REPO_PATH}
-                        git restore .
-                        patch -p1 --force < ${PATCH}
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    cd ${REMOTE_PATH}
+                    git clone --branch release/v0.6.0 https://github.com/intel-collab/os.rtos.fpga.freertos.git
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    git submodule update --init --recursive
+                    ENDSSH
+                    """
                 }
             }
         }
 
-        
-        stage('Build Binaries') {
+        stage('Remote: Apply Patch') {
             steps {
                 script {
-                    sh '''
-                        cd ${BUILD_PATH}
-                        mkdir -p build
-                        cd build
-                        cmake ../
-                        make clean
-                        make
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    git restore .
+                    patch -p1 --force < ${PATCH_PATH}
+                    ENDSSH
+                    """
                 }
             }
         }
 
-        stage('Check Python Version and Installed Packages') {
+        stage('Remote: Build') {
             steps {
                 script {
-                    sh '''
-                        python3 --version
-                        python3 -m pip list
-                    '''
-                }
-            }
-        }
-        
-        stage('Switch Device Mode') {
-            steps {
-                script {
-                    sh '''
-                        cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
-                        python3 pdk_control.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
+                    mkdir -p build && cd build
+                    cmake ../
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests/build
+                    make clean
+                    make
+                    ENDSSH
+                    """
                 }
             }
         }
 
-        stage('Generate JIC image') {
+        stage('Remote: Switch Device Mode') {
             steps {
                 script {
-                    sh '''
-                        cd ${SCRIPT_PATH}
-                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
-                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    cd ${REMOTE_SCRIPT_PATH}
+                    python3 pdk_control.py
+                    ENDSSH
+                    """
                 }
             }
         }
 
-        stage('Power cycle device') {
+        stage('Remote: Generate JIC image') {
             steps {
                 script {
-                    sh '''
-                        cd ${SCRIPT_PATH}
-                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
-                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    set -e
+                    echo "=== Generating JIC image ==="
+                    cd ${REMOTE_SCRIPT_PATH}
+                    python3 generate_jic_image.py
+
+                    echo "=== Flashing JIC image ==="
+                    ./flash.sh
+                    ENDSSH
+                    """
                 }
             }
         }
 
-    stage('Run python automation script') {
+
+        stage('Remote: Power cycle device') {
             steps {
                 script {
-                    sh '''
-                        cd ${AUTOMATION_SCRIPT}
-                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
-                        export PYTHONUSERBASE=$HOME/.local
-                        python3 -m pip install --user pyserial 
-                        python3 i3c_test.py >> ${WORKSPACE}/test_results.txt 2>&1
-                    '''
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    cd ${REMOTE_SCRIPT_PATH}
+                    python3 power_cycle.py
+                    ENDSSH
+                    """
                 }
             }
         }
+
+        stage('Remote: Run Python Automation Script') {
+            steps {
+                script {
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                    set -e
+                    echo "==== Running Python Automation Script ===="
+                    cd ${REMOTE_AUTOMATION_SCRIPT}
+                    python3 -m pip install --user pyserial
+                    python3 i3c_test.py >> ${REMOTE_WORKSPACE}/test_results.txt 2>&1
+                    ENDSSH
+                    """
+                }
+            }
+        }
+
+        stage('Pull Test Results from Remote') {
+            steps {
+                script {
+                    sh """
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/test_results.txt ${WORKSPACE}/test_results.txt || true
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
+                    """
+                }
+            }
+        }
+
+
 
         stage('Save Results') {
             steps {
@@ -137,10 +146,10 @@ pipeline {
             }
         }
     }
-    post {
-    always {
-        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
-    }
-}
 
+    post {
+        always {
+            archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+        }
+    }
 }
