@@ -68,7 +68,7 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}
                         make clean
-                        make drivertests
+                        make drivertests -j12
                     '''
                 }
             }
