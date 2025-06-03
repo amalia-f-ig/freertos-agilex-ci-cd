@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel4/intelFPGA_pro/24.2/quartus'
+        QUARTUS_ROOTDIR = '/home/intel4/intelFPGA_pro/24.3/quartus'
         ARM_GNU_TOOLCHAIN = '/home/intel4/toolchain_13_3/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         CMAKE_PATH= '/home/intel4/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
@@ -78,6 +78,10 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                    export CMAKE_PATH=${CMAKE_PATH}
+                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
                     cd ${REMOTE_SCRIPT_PATH}
                     python3 pdk_control.py
 ENDSSH
