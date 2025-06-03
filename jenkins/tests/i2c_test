@@ -137,7 +137,6 @@ ENDSSH
             steps {
                 script {
                     sh """
-                    echo "==== Running Python Automation Script ===="
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "==== Running Python Automation Script ===="
@@ -154,25 +153,64 @@ ENDSSH
             steps {
                 script {
                     sh """
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/test_results.txt ${WORKSPACE}/test_results.txt || true
                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
                     """
                 }
             }
         }
 
-
-
         stage('Save Results') {
             steps {
-                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+                archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+            archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
         }
     }
+
+//         stage('Remote: Run Python Automation Script') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     set -e
+//                     echo "==== Running Python Automation Script ===="
+//                     cd ${REMOTE_AUTOMATION_SCRIPT}
+//                     python3 -m pip install --user pyserial
+//                     python3 i2c_test.py >> ${REMOTE_WORKSPACE}/test_results.txt 2>&1
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Pull Test Results from Remote') {
+//             steps {
+//                 script {
+//                     sh """
+//                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/test_results.txt ${WORKSPACE}/test_results.txt || true
+//                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
+//                     """
+//                 }
+//             }
+//         }
+
+
+
+//         stage('Save Results') {
+//             steps {
+//                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+//             }
+//         }
+//     }
+
+//     post {
+//         always {
+//             archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+//         }
+//     }
 }
