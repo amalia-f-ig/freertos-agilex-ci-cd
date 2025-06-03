@@ -137,6 +137,7 @@ ENDSSH
             steps {
                 script {
                     sh """
+                    echo "==== Running Python Automation Script ===="
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "==== Running Python Automation Script ===="
