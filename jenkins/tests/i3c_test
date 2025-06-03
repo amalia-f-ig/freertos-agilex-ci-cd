@@ -10,7 +10,7 @@ pipeline {
         SSH_HOST = '192.168.40.24'
         REMOTE_PATH = '/home/intel4/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/timer_test.patch"
+        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
     }
 
     stages {
