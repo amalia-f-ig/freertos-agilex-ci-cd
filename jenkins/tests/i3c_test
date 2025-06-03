@@ -55,6 +55,23 @@ ENDSSH
             }
         }
 
+        stage('Remote: Toolchain Setup') {
+            steps {
+                script {
+                    sh """
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+                    cd ${REMOTE_PATH}/Intel6_nand
+                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                    export CMAKE_PATH=${CMAKE_PATH}
+                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
+        ENDSSH
+                    """
+                }
+            }
+        }
+
+
         stage('Remote: Build') {
             steps {
                 script {
@@ -78,10 +95,6 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
                     cd ${REMOTE_SCRIPT_PATH}
                     python3 pdk_control.py
 ENDSSH
@@ -99,9 +112,6 @@ ENDSSH
                     echo "=== Generating JIC image ==="
                     cd ${REMOTE_SCRIPT_PATH}
                     python3 generate_jic_image.py
-
-                    echo "=== Flashing JIC image ==="
-                    ./flash.sh
 ENDSSH
                     """
                 }
