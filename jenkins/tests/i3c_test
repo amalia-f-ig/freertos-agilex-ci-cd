@@ -56,12 +56,9 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
-                    mkdir -p build && cd build
-                    cmake ../
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests/build
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     make clean
-                    make
+                    make divertests -j12
 ENDSSH
                     """
                 }
