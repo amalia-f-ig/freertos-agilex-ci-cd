@@ -12,7 +12,7 @@ pipeline {
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/ethernet_test.patch"
+        PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/bridge_test.patch"
     }
 
     stages {
@@ -43,17 +43,17 @@ pipeline {
             }
         }
 
-        // stage('Apply Patch') {
-        //     steps {
-        //         script {
-        //             sh '''
-        //                 cd ${REPO_PATH}
-        //                 git restore .
-        //                 patch -p1 --force < ${PATCH}
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                    '''
+                }
+            }
+        }
 
         
         stage('Build Binaries') {
@@ -62,7 +62,7 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}
                         make clean
-                        make cli -j12
+                        make drivertests -j12
                     '''
                 }
             }
@@ -123,7 +123,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 ethernet_test.py ethernet_commands.txt >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 bridge_test.py >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
