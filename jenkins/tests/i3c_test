@@ -158,7 +158,7 @@ ENDSSH
             steps {
                 script {
                     sh """
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt 
                     """
                 }
             }
