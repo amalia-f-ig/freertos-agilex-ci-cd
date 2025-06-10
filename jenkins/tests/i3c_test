@@ -159,7 +159,7 @@ ENDSSH
             steps {
                 script {
                     sh """
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${AUTOMATION_SCRIPT_PATH}/boot_log.txt 
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${AUTOMATION_SCRIPT}/boot_log.txt 
                     """
                 }
             }
