@@ -11,6 +11,7 @@ pipeline {
         REMOTE_PATH = '/home/intel6/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
+        AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
     }
 
@@ -158,7 +159,7 @@ ENDSSH
             steps {
                 script {
                     sh """
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${WORKSPACE}/boot_log.txt 
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${AUTOMATION_SCRIPT_PATH}/boot_log.txt 
                     """
                 }
             }
