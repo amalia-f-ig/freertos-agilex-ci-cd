@@ -155,29 +155,29 @@ ENDSSH
             }
         }
 
-        stage('Pull Test Results from Remote') {
-            steps {
-                script {
-                    sh '''
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${WORKSPACE}/boot_log.txt << ENDSSH
-ENDSSH
-                    '''
-                }
-            }
-        }
+//         stage('Pull Test Results from Remote') {
+//             steps {
+//                 script {
+//                     sh '''
+//                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${WORKSPACE}/boot_log.txt << ENDSSH
+// ENDSSH
+//                     '''
+//                 }
+//             }
+//         }
 
-        stage('Save Results') {
-            steps {
-                archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
-            }
-        }
-    }
+//         stage('Save Results') {
+//             steps {
+//                 archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
+//             }
+//         }
+//     }
 
-    post {
-        always {
-            archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
-        }
-    }
+//     post {
+//         always {
+//             archiveArtifacts artifacts: 'boot_log.txt', fingerprint: true
+//         }
+//     }
 
 //         stage('Remote: Run Python Automation Script') {
 //             steps {
