@@ -158,10 +158,10 @@ ENDSSH
         stage('Pull Test Results from Remote') {
             steps {
                 script {
-                    sh """
+                    sh '''
                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/boot_log.txt ${WORKSPACE}/boot_log.txt << ENDSSH
 ENDSSH
-                    """
+                    '''
                 }
             }
         }
