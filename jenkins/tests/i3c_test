@@ -160,11 +160,14 @@ ENDSSH
                 script {
                     sh """
                     echo "=== Pulling test_results.txt from remote ==="
-                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt ${WORKSPACE}/test_results.txt
+                    scp \
+                      "${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt" \
+                      "${WORKSPACE}/test_results.txt"
                     """
                 }
             }
         }
+        
 
         stage('Archive Results') {
             steps {
