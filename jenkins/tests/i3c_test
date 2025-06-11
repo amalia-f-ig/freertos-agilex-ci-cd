@@ -158,10 +158,10 @@ ENDSSH
         stage('Pull Test Results from Remote') {
             steps {
                 script {
-                    sh '''
+                    sh """
                     echo "=== Pulling test_results.txt from remote ==="
                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt ${WORKSPACE}/test_results.txt
-                    '''
+                    """
                 }
             }
         }
