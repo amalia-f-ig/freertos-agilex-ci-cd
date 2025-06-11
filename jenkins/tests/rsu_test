@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel4/altera_pro/25.1/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel4/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        QUARTUS_ROOTDIR = '/home/intel4/intelFPGA_pro/24.3/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel4/toolchain_13_3/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
         CMAKE_PATH= '/home/intel4/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         SSH_USER = 'intel4'
