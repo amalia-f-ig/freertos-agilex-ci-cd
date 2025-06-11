@@ -2,158 +2,313 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel6/altera_pro/25.1/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        CMAKE_PATH= '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
-        PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        SSH_USER = 'intel6'
-        SSH_HOST = '192.168.40.25'
-        REMOTE_PATH = '/home/intel6/Jenkins'
-        REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        QUARTUS_ROOTDIR        = '/home/intel6/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN      = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        CMAKE_PATH             = '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
+        PATH                   = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
+        SSH_USER               = 'intel6'
+        SSH_HOST               = '192.168.40.25'
+        REMOTE_PATH            = '/home/intel6/Jenkins'
+        REMOTE_SCRIPT_PATH     = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
+        PATCH_PATH             = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
     }
 
     stages {
-
- stage('Remote: Cleanup') {
+        stage('Remote: Cleanup') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
-                    """
-                }
+                sh "ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'"
             }
         }
 
         stage('Remote: Clone Repository') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}
-                    git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git submodule update --init --recursive
-ENDSSH
-                    """
-                }
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  cd ${REMOTE_PATH}
+                  git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
+                  cd os.rtos.fpga.freertos
+                  git submodule update --init --recursive
+                ENDSSH
+                """
             }
         }
 
         stage('Remote: Apply Patch') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git restore .
-                    pwd
-                    patch -p1 --force < ${PATCH_PATH}
-ENDSSH
-                    """
-                }
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                  git restore .
+                  patch -p1 --force < ${PATCH_PATH}
+                ENDSSH
+                """
             }
         }
 
         stage('Remote: Toolchain Setup') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/Intel6_nand
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-ENDSSH
-                    """
-                }
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                  export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                  export CMAKE_PATH=${CMAKE_PATH}
+                  export PATH=\\$ARM_GNU_TOOLCHAIN:\\$CMAKE_PATH:\\$QUARTUS_ROOTDIR/bin:\\$QUARTUS_ROOTDIR/linux64:\\$QUARTUS_ROOTDIR/../qsys/bin:\\$PATH
+                ENDSSH
+                """
             }
         }
 
-
         stage('Remote: Build') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    make clean
-                    make drivertests -j12
-ENDSSH
-                    """
-                }
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                  export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                  export CMAKE_PATH=${CMAKE_PATH}
+                  export PATH=\\$ARM_GNU_TOOLCHAIN:\\$CMAKE_PATH:\\$QUARTUS_ROOTDIR/bin:\\$QUARTUS_ROOTDIR/linux64:\\$QUARTUS_ROOTDIR/../qsys/bin:\\$PATH
+                  cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                  make clean
+                  make drivertests -j12
+                ENDSSH
+                """
             }
         }
 
         stage('Remote: Switch Device Mode') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 pdk_control.py
-ENDSSH
-                    """
-                }
+                sh "ssh ${SSH_USER}@${SSH_HOST} 'cd ${REMOTE_SCRIPT_PATH} && python3 pdk_control.py'"
             }
         }
 
         stage('Remote: Generate JIC image') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    set -e
-                    echo "=== Generating JIC image ==="
-                    cd ${REMOTE_PATH}/Intel6_nand
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 generate_jic_image.py
-ENDSSH
-                    """
-                }
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  set -e
+                  cd ${REMOTE_PATH}/Intel6_nand
+                  export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                  export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                  export CMAKE_PATH=${CMAKE_PATH}
+                  export PATH=\\$ARM_GNU_TOOLCHAIN:\\$CMAKE_PATH:\\$QUARTUS_ROOTDIR/bin:\\$QUARTUS_ROOTDIR/linux64:\\$QUARTUS_ROOTDIR/../qsys/bin:\\$PATH
+                  cd ${REMOTE_SCRIPT_PATH}
+                  python3 generate_jic_image.py
+                ENDSSH
+                """
             }
         }
 
-
         stage('Remote: Power cycle device') {
             steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 power_cycle.py
-ENDSSH
-                    """
-                }
+                sh "ssh ${SSH_USER}@${SSH_HOST} 'cd ${REMOTE_SCRIPT_PATH} && python3 power_cycle.py'"
             }
         }
 
         stage('Remote: Run Python Automation Script') {
             steps {
+                sh """
+                ssh ${SSH_USER}@${SSH_HOST} << 'ENDSSH'
+                  set -e
+                  cd ${REMOTE_AUTOMATION_SCRIPT}
+                  python3 -m pip install --user pyserial
+                  python3 i3c_test.py
+                ENDSSH
+                """
+            }
+        }
+
+        stage('Pull Test Results from Remote') {
+            steps {
                 script {
+                    // Pull test_results.txt back into the Jenkins workspace
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    set -e
-                    echo "==== Running Python Automation Script ===="
-                    cd ${REMOTE_AUTOMATION_SCRIPT}
-                    python3 -m pip install --user pyserial
-                    python3 i3c_test.py 
-ENDSSH
+                    echo "=== Pulling test_results.txt from remote ==="
+                    scp ${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt ${WORKSPACE}/test_results.txt
                     """
                 }
             }
         }
+
+        stage('Archive Results') {
+            steps {
+                // Archive test_results.txt as the build artifact
+                archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// pipeline {
+//     agent any
+
+//     environment {
+//         QUARTUS_ROOTDIR = '/home/intel6/altera_pro/25.1/quartus'
+//         ARM_GNU_TOOLCHAIN = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+//         CMAKE_PATH= '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
+//         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
+//         SSH_USER = 'intel6'
+//         SSH_HOST = '192.168.40.25'
+//         REMOTE_PATH = '/home/intel6/Jenkins'
+//         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
+//         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
+//         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
+//         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
+//     }
+
+//     stages {
+
+//  stage('Remote: Cleanup') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Clone Repository') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_PATH}
+//                     git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
+//                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+//                     git submodule update --init --recursive
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Apply Patch') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+//                     git restore .
+//                     pwd
+//                     patch -p1 --force < ${PATCH_PATH}
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Toolchain Setup') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_PATH}/Intel6_nand
+//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+//                     export CMAKE_PATH=${CMAKE_PATH}
+//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+
+//         stage('Remote: Build') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+//                     export CMAKE_PATH=${CMAKE_PATH}
+//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
+//                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+//                     make clean
+//                     make drivertests -j12
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Switch Device Mode') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_SCRIPT_PATH}
+//                     python3 pdk_control.py
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Generate JIC image') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     set -e
+//                     echo "=== Generating JIC image ==="
+//                     cd ${REMOTE_PATH}/Intel6_nand
+//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+//                     export CMAKE_PATH=${CMAKE_PATH}
+//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
+//                     cd ${REMOTE_SCRIPT_PATH}
+//                     python3 generate_jic_image.py
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+
+//         stage('Remote: Power cycle device') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_SCRIPT_PATH}
+//                     python3 power_cycle.py
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
+
+//         stage('Remote: Run Python Automation Script') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     set -e
+//                     echo "==== Running Python Automation Script ===="
+//                     cd ${REMOTE_AUTOMATION_SCRIPT}
+//                     python3 -m pip install --user pyserial
+//                     python3 i3c_test.py 
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
 
 //         stage('Pull Test Results from Remote') {
 //             steps {
@@ -179,46 +334,46 @@ ENDSSH
 //         }
 //     }
 
-//         stage('Remote: Run Python Automation Script') {
-//             steps {
-//                 script {
-//                     sh """
-//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-//                     set -e
-//                     echo "==== Running Python Automation Script ===="
-//                     cd ${REMOTE_AUTOMATION_SCRIPT}
-//                     python3 -m pip install --user pyserial
-//                     python3 i3c_test.py >> ${REMOTE_WORKSPACE}/test_results.txt 2>&1
-// ENDSSH
-//                     """
-//                 }
-//             }
-//         }
+// //         stage('Remote: Run Python Automation Script') {
+// //             steps {
+// //                 script {
+// //                     sh """
+// //                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+// //                     set -e
+// //                     echo "==== Running Python Automation Script ===="
+// //                     cd ${REMOTE_AUTOMATION_SCRIPT}
+// //                     python3 -m pip install --user pyserial
+// //                     python3 i3c_test.py >> ${REMOTE_WORKSPACE}/test_results.txt 2>&1
+// // ENDSSH
+// //                     """
+// //                 }
+// //             }
+// //         }
 
-//         stage('Pull Test Results from Remote') {
-//             steps {
-//                 script {
-//                     sh """
-//                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/test_results.txt ${WORKSPACE}/test_results.txt || true
-//                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
-//                     """
-//                 }
-//             }
-//         }
+// //         stage('Pull Test Results from Remote') {
+// //             steps {
+// //                 script {
+// //                     sh """
+// //                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/test_results.txt ${WORKSPACE}/test_results.txt || true
+// //                     scp ${SSH_USER}@${SSH_HOST}:${REMOTE_WORKSPACE}/boot_log.txt ${WORKSPACE}/boot_log.txt || true
+// //                     """
+// //                 }
+// //             }
+// //         }
 
 
 
-//         stage('Save Results') {
-//             steps {
-//                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
-//             }
-//         }
-//     }
+// //         stage('Save Results') {
+// //             steps {
+// //                 archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+// //             }
+// //         }
+// //     }
 
-//     post {
-//         always {
-//             archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
-//         }
-//     }
-}
-}
+// //     post {
+// //         always {
+// //             archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
+// //         }
+// //     }
+// }
+// }
