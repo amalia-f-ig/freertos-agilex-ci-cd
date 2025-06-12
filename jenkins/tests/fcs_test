@@ -121,7 +121,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo "==== Run script to flash key====" >> ${WORKSPACE}/test_results.txt
-                        ./flash >> ${WORKSPACE}/test_results.txt 2>&1
+                        ./flash_key.sh >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
