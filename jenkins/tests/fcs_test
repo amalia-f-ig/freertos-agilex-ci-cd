@@ -115,7 +115,19 @@ pipeline {
             }
         }
 
-    stage('Run python automation script') {
+        stage('Run FCS Flash script') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Run Flash script ====" >> ${WORKSPACE}/test_results.txt
+                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+        stage('Run python automation script') {
             steps {
                 script {
                     sh '''

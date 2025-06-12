@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel4/intelFPGA_pro/24.3/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel4/toolchain_13_3/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        QUARTUS_ROOTDIR = '/home/intel4/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel4/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf'
         CMAKE_PATH= '/home/intel4/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         SSH_USER = 'intel4'
@@ -85,7 +85,7 @@ ENDSSH
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     make clean
-                    make drivertests -j12
+                    make drivertests -j8
 ENDSSH
                     """
                 }
@@ -148,11 +148,37 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 spi_test.py 
+                    python3 -u spi_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
             }
+        }
+
+        stage('Pull Test Results from Remote') {
+            steps {
+                script {
+                    sh """
+                    echo "=== Pulling test_results.txt from remote ==="
+                    scp \
+                      "${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt" \
+                      "${WORKSPACE}/test_results.txt"
+                    """
+                }
+            }
+        }
+        
+
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
         }
     }
 }
