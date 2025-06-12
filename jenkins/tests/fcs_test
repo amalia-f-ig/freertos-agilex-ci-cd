@@ -115,13 +115,13 @@ pipeline {
             }
         }
 
-        stage('Run FCS Flash script') {
+        stage('Run Sciprt to Flash Key') {
             steps {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Run Flash script ====" >> ${WORKSPACE}/test_results.txt
-                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        echo "==== Run script to flash key====" >> ${WORKSPACE}/test_results.txt
+                        ./flash >> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
