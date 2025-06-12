@@ -7,7 +7,7 @@ pipeline {
         CMAKE_PATH= '/home/intel5/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
         SSH_USER = 'intel5'
-        SSH_HOST = '192.168.40.25'
+        SSH_HOST = '192.168.55.58'
         REMOTE_PATH = '/home/intel5/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
