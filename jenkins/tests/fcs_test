@@ -144,7 +144,7 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
+                    cd ${REMOTE_SCRIPT_PATH}/FCS
                     ./flash_key.sh
 ENDSSH
                     """
