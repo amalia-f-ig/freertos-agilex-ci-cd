@@ -144,6 +144,11 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+                    cd ${REMOTE_PATH}/Intel6_nand
+                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+                    export CMAKE_PATH=${CMAKE_PATH}
+                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
                     cd ${REMOTE_SCRIPT_PATH}/FCS
                     ./flash_key.sh
 ENDSSH
