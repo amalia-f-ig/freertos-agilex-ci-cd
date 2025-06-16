@@ -47,7 +47,8 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    patch -p1 --force < ${PATCH_PATH}
+                    cd ${REMOTE_PATH}/patches/releasev5/tests
+                    patch -p1 --force < i3c_test.patch
 ENDSSH
                     """
                 }
