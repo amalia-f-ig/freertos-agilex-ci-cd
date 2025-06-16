@@ -50,6 +50,7 @@ ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     git restore .
                     pwd
+                    cd 
                     cd ${REMOTE_PATH}/patches/releasev5/tests
                     patch -p1 --force < i2c_test.patch
 ENDSSH
