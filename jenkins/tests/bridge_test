@@ -61,7 +61,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}/drivers/tests
-                       rm -rf build && cmake -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build 
+                        rm -rf build && cmake -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build 
                     '''
                 }
             }
