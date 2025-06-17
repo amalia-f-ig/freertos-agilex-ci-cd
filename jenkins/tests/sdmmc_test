@@ -62,7 +62,8 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
-                        rm -rf build && cmake -B build  && cmake --build build -t qspi-image
+                        m -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Intel6_nand/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+ 
                     '''
                 }
             }
