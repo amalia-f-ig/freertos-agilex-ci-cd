@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        SAMPLES_DIR = 'CI-CD Pipelines/Samples'
+    }
+
+    stages {
+        stage('List Samples') {
+            steps {
+                script {
+                    // Get list of sample directories
+                    SAMPLE_DIRS = sh(
+                        script: "find \"${SAMPLES_DIR}\" -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'",
+                        returnStdout: true
+                    ).trim().split('\n')
+
+                    echo "Found sample folders: ${SAMPLE_DIRS.join(', ')}"
+                }
+            }
+        }
+
+        stage('Build Each Sample with Retry') {
+            steps {
+                script {
+                    for (dirName in SAMPLE_DIRS) {
+                        echo "==> Starting build for sample: ${dirName}"
+
+                        def attempt = 0
+                        def success = false
+
+                        while (attempt < 3 && !success) {
+                            attempt++
+                            echo "Attempt #${attempt} for ${dirName}"
+
+                            try {
+                                dir("${SAMPLES_DIR}/${dirName}") {
+                                    if (fileExists('Jenkinsfile')) {
+                                        echo "Running pipeline inside ${dirName}/Jenkinsfile"
+                                        load 'Jenkinsfile'  // If you're triggering another job, replace this with `build job: ...`
+                                    } else {
+                                        echo "No Jenkinsfile found in ${dirName}. Skipping..."
+                                        success = true  // Consider it "skipped" so we move on
+                                        break
+                                    }
+                                }
+                                success = true  // If no exception, mark success
+                            } catch (err) {
+                                echo "Build failed for ${dirName} on attempt ${attempt}: ${err}"
+                                if (attempt == 3) {
+                                    error("❌ ${dirName} failed after 3 attempts. Aborting pipeline.")
+                                } else {
+                                    echo "Retrying ${dirName}..."
+                                }
+                            }
+                        }
+
+                        echo "<== Finished build for sample: ${dirName}"
+                    }
+                }
+            }
+        }
+    }
+}
