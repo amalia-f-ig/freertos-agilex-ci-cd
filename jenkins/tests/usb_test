@@ -13,6 +13,7 @@ pipeline {
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/usb_test.patch"
+        BLOCK_NAME = "usb3"
     }
 
     stages {
@@ -60,8 +61,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}/drivers/tests
-                        rm -rf build && cmake -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build 
+                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
+                        rm -rf build && cmake -B build  && cmake --build build -t qspi-image
                     '''
                 }
             }
