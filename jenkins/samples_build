@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        // Absolute path to your Samples directory
         SAMPLES_DIR = '/var/lib/jenkins/workspace/CI-CD Pipelines/Samples'
     }
 
@@ -22,40 +23,44 @@ pipeline {
         stage('List Sample Folders') {
             steps {
                 script {
+                    // Find all immediate subdirectories under SAMPLES_DIR
                     def SAMPLE_DIRS = sh(
-                        script: "find '/var/lib/jenkins/workspace/CI-CD Pipelines/Samples' -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'",
+                        script: "find \"$SAMPLES_DIR\" -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'",
                         returnStdout: true
-                    ).trim().split('\n')
-                    echo "📦 Found samples: ${SAMPLE_DIRS}"
+                    ).trim().split('\\n')
+
+                    // Filter out any temporary folders (e.g. those ending with @tmp)
+                    SAMPLE_DIRS = SAMPLE_DIRS.findAll { !it.endsWith('@tmp') }
+                    
+                    echo "📦 Will trigger pipelines for: ${SAMPLE_DIRS}"
                     env.SAMPLE_LIST = SAMPLE_DIRS.join(',')
                 }
             }
         }
 
-        stage('Build Each Sample (Retry x3)') {
+        stage('Trigger Sample Pipelines (Retry x3)') {
             steps {
                 script {
+                    // Tokenize the comma‑separated list into an array
                     def dirs = env.SAMPLE_LIST.tokenize(',')
                     for (dirName in dirs) {
-                        echo "▶️ Building: ${dirName}"
-                        def success = false
+                        echo "🚀 Triggering pipeline job: '${dirName}'"
+                        boolean success = false
+
                         for (int attempt = 1; attempt <= 3; attempt++) {
                             try {
-                                echo "  🔁 Attempt ${attempt}..."
-                                dir("/var/lib/jenkins/workspace/CI-CD Pipelines/Samples/${dirName}") {
-                                    if (fileExists('Jenkinsfile')) {
-                                        load 'Jenkinsfile'
-                                    } else {
-                                        echo "  ⚠️ No Jenkinsfile found in ${dirName}, skipping"
-                                    }
-                                }
-                                echo "✅ Success: ${dirName}"
+                                echo "  🔁 Attempt ${attempt} for job '${dirName}'"
+                                // Trigger the downstream Jenkins job with the same name
+                                build job: dirName, wait: true
+                                echo "✅ Job '${dirName}' succeeded"
                                 success = true
                                 break
-                            } catch (e) {
-                                echo "❌ Failed: ${dirName} (Attempt ${attempt})"
+                            } catch (err) {
+                                echo "❌ Job '${dirName}' failed on attempt ${attempt}: ${err}"
                                 if (attempt == 3) {
-                                    error("🔥 ${dirName} failed after 3 retries.")
+                                    error("🔥 Job '${dirName}' failed after 3 attempts — aborting pipeline.")
+                                } else {
+                                    echo "🔄 Retrying job '${dirName}'..."
                                 }
                             }
                         }
@@ -67,7 +72,7 @@ pipeline {
 
     post {
         always {
-            echo "🏁 Pipeline finished"
+            echo "🏁 All done. Check above logs for details."
         }
     }
 }
