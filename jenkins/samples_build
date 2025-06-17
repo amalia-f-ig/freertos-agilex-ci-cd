@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SAMPLES_DIR = 'CI-CD Pipelines/Samples'
+        SAMPLES_DIR = 'Dashboard/CI-CD Pipelines/Samples'
     }
 
     stages {
@@ -12,16 +12,28 @@ pipeline {
             }
         }
 
+        stage('Debug FS') {
+          steps {
+            sh '''
+              echo "WORKSPACE = $PWD"
+              ls -l .
+              echo "--- see Dashboard subdir ---"
+              ls -l Dashboard
+            '''
+          }
+        }
+        
+
         stage('List Samples') {
             steps {
                 script {
-                    SAMPLE_DIRS = sh(
-                        script: 'find "CI-CD Pipelines/Samples" -mindepth 1 -maxdepth 1 -type d -printf "%f\\n"',
-                        returnStdout: true
-                    ).trim().split('\n')
-
-                    echo "Found sample folders: ${SAMPLE_DIRS.join(', ')}"
+                  SAMPLE_DIRS = sh(
+                    script: 'find "Dashboard/CI-CD Pipelines/Samples" -mindepth 1 -maxdepth 1 -type d -printf "%f\\n"',
+                    returnStdout: true
+                  ).trim().split('\n')
+                  echo "Found sample folders: ${SAMPLE_DIRS}"
                 }
+
             }
         }
 
