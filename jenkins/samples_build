@@ -2,28 +2,19 @@ pipeline {
     agent any
 
     environment {
-        // WORKSPACE == /var/lib/jenkins/workspace/CI‑CD Pipelines
-        SAMPLES_DIR = "${WORKSPACE}/Samples"
+        SAMPLES_DIR = '/var/lib/jenkins/workspace/CI-CD Pipelines/Samples'
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Verify Samples Path') {
             steps {
                 sh '''
-                  echo "WORKSPACE = [$WORKSPACE]"
-                  echo "Checking for Samples at   : [$SAMPLES_DIR]"
-                  if [ ! -d "$SAMPLES_DIR" ]; then
-                    echo "🔥 ERROR: Samples dir not found!"
-                    ls -la "$WORKSPACE"
-                    exit 1
-                  fi
-                  echo "✅ Found Samples dir."
+                    echo "📁 Checking absolute path: $SAMPLES_DIR"
+                    if [ ! -d "$SAMPLES_DIR" ]; then
+                        echo "❌ ERROR: Directory not found: $SAMPLES_DIR"
+                        exit 1
+                    fi
+                    echo "✅ Found Samples dir: $SAMPLES_DIR"
                 '''
             }
         }
@@ -31,47 +22,43 @@ pipeline {
         stage('List Sample Folders') {
             steps {
                 script {
-                    SAMPLE_DIRS = sh(
-                        script:  "find \"$SAMPLES_DIR\" -mindepth 1 -maxdepth 1 -type d -printf \"%f\\n\"",
+                    def SAMPLE_DIRS = sh(
+                        script: "find '/var/lib/jenkins/workspace/CI-CD Pipelines/Samples' -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'",
                         returnStdout: true
-                    ).trim().split("\\n")
-                    echo "🔍 Samples to build: ${SAMPLE_DIRS}"
+                    ).trim().split('\n')
+                    echo "📦 Found samples: ${SAMPLE_DIRS}"
+                    env.SAMPLE_LIST = SAMPLE_DIRS.join(',')
                 }
             }
         }
 
-        stage('Build Each Sample (3× retry)') {
+        stage('Build Each Sample (Retry x3)') {
             steps {
                 script {
-                    for (sample in SAMPLE_DIRS) {
-                        echo "⏳ Building sample: ${sample}"
-                        boolean built = false
-                        int attempt = 0
-
-                        while (!built && attempt < 3) {
-                            attempt++
-                            echo "➡️  Attempt #${attempt} for ${sample}"
+                    def dirs = env.SAMPLE_LIST.tokenize(',')
+                    for (dirName in dirs) {
+                        echo "▶️ Building: ${dirName}"
+                        def success = false
+                        for (int attempt = 1; attempt <= 3; attempt++) {
                             try {
-                                dir("${SAMPLES_DIR}/${sample}") {
+                                echo "  🔁 Attempt ${attempt}..."
+                                dir("/var/lib/jenkins/workspace/CI-CD Pipelines/Samples/${dirName}") {
                                     if (fileExists('Jenkinsfile')) {
-                                        echo "   ▶️  Loading Jenkinsfile in ${sample}"
                                         load 'Jenkinsfile'
                                     } else {
-                                        echo "   ⚠️  No Jenkinsfile found—skipping ${sample}"
+                                        echo "  ⚠️ No Jenkinsfile found in ${dirName}, skipping"
                                     }
                                 }
-                                built = true
-                                echo "✅ ${sample} succeeded on attempt ${attempt}"
-                            } catch (err) {
-                                echo "❌ ${sample} failed on attempt ${attempt}: ${err}"
+                                echo "✅ Success: ${dirName}"
+                                success = true
+                                break
+                            } catch (e) {
+                                echo "❌ Failed: ${dirName} (Attempt ${attempt})"
                                 if (attempt == 3) {
-                                    error("🚨 ${sample} failed after 3 attempts—aborting pipeline.")
-                                } else {
-                                    echo "🔄 Retrying ${sample}..."
+                                    error("🔥 ${dirName} failed after 3 retries.")
                                 }
                             }
                         }
-                        echo "🏁 Done with ${sample}"
                     }
                 }
             }
@@ -80,7 +67,7 @@ pipeline {
 
     post {
         always {
-            echo "🎉 Pipeline complete. Check above logs for details."
+            echo "🏁 Pipeline finished"
         }
     }
 }
