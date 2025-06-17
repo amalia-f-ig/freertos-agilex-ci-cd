@@ -2,26 +2,27 @@ pipeline {
     agent any
 
     environment {
-        // adjust this to match the real path under your workspace
-        SAMPLES_DIR = 'jenkins/CI-CD Pipelines/Samples'
+        // ← point this at the on‑disk samples folder you discovered
+        SAMPLES_DIR = 'jenkins/Samples'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // pull down your GitHub repo
                 checkout scm
             }
         }
 
-        stage('Walk the FS (debug)') {
+        stage('Debug: Walk the FS') {
             steps {
-                // one‑time debug: remove after you confirm the right path
+                // (You can remove this entire stage once everything’s green)
                 sh '''
-                  echo "Workspace is: $PWD"
+                  echo "Workspace root: $PWD"
+                  echo "Top‑level dirs:"
+                  ls -1
                   echo ""
-                  echo "Directories up to depth 3:"
-                  find . -maxdepth 3 -type d
+                  echo "jenkins/:"
+                  ls -1 jenkins
                 '''
             }
         }
@@ -29,9 +30,8 @@ pipeline {
         stage('List Samples') {
             steps {
                 script {
-                    // find every immediate subdirectory under SAMPLES_DIR
                     SAMPLE_DIRS = sh(
-                        script:  "find \"${SAMPLES_DIR}\" -mindepth 1 -maxdepth 1 -type d -printf \"%f\\n\"",
+                        script:  'find "jenkins/Samples" -mindepth 1 -maxdepth 1 -type d -printf "%f\\n"',
                         returnStdout: true
                     ).trim().split('\n')
 
@@ -52,12 +52,13 @@ pipeline {
                             attempt++
                             echo "➡️  Attempt #${attempt} for ${dirName}"
                             try {
+                                // cd into the sample’s folder
                                 dir("${SAMPLES_DIR}/${dirName}") {
                                     if (fileExists('Jenkinsfile')) {
-                                        echo "   ▶️  Loading ${dirName}/Jenkinsfile"
+                                        echo "   ▶️  Loading Jenkinsfile in ${dirName}"
                                         load 'Jenkinsfile'
                                     } else {
-                                        echo "   ⚠️  No Jenkinsfile in ${dirName}, skipping build"
+                                        echo "   ⚠️  No Jenkinsfile found in ${dirName}, skipping"
                                     }
                                 }
                                 success = true
@@ -65,7 +66,7 @@ pipeline {
                             } catch (err) {
                                 echo "❌ Build failed for ${dirName} on attempt ${attempt}: ${err}"
                                 if (attempt == 3) {
-                                    error("🚨 ${dirName} failed after 3 attempts — aborting")
+                                    error("🚨 ${dirName} failed after 3 attempts — aborting pipeline")
                                 } else {
                                     echo "🔄 Retrying ${dirName}..."
                                 }
@@ -81,7 +82,7 @@ pipeline {
 
     post {
         always {
-            echo "All done. Check above logs for any failures."
+            echo "🎉 All done—check above logs for any failures."
         }
     }
 }
