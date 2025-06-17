@@ -6,12 +6,17 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('List Samples') {
             steps {
                 script {
-                    // Get list of sample directories
                     SAMPLE_DIRS = sh(
-                        script: "find \"${SAMPLES_DIR}\" -mindepth 1 -maxdepth 1 -type d -printf '%f\\n'",
+                        script: 'find "CI-CD Pipelines/Samples" -mindepth 1 -maxdepth 1 -type d -printf "%f\\n"',
                         returnStdout: true
                     ).trim().split('\n')
 
@@ -20,35 +25,31 @@ pipeline {
             }
         }
 
-        stage('Build Each Sample with Retry') {
+        stage('Build Each Sample') {
             steps {
                 script {
                     for (dirName in SAMPLE_DIRS) {
+                        def buildSuccess = false
+                        def attempts = 0
                         echo "==> Starting build for sample: ${dirName}"
 
-                        def attempt = 0
-                        def success = false
-
-                        while (attempt < 3 && !success) {
-                            attempt++
-                            echo "Attempt #${attempt} for ${dirName}"
-
+                        while (!buildSuccess && attempts < 3) {
+                            attempts++
                             try {
                                 dir("${SAMPLES_DIR}/${dirName}") {
                                     if (fileExists('Jenkinsfile')) {
-                                        echo "Running pipeline inside ${dirName}/Jenkinsfile"
-                                        load 'Jenkinsfile'  // If you're triggering another job, replace this with `build job: ...`
+                                        echo "Running Jenkinsfile inside ${dirName}, attempt ${attempts}"
+                                        load 'Jenkinsfile'
+                                        buildSuccess = true
                                     } else {
-                                        echo "No Jenkinsfile found in ${dirName}. Skipping..."
-                                        success = true  // Consider it "skipped" so we move on
-                                        break
+                                        echo "No Jenkinsfile found in ${dirName}, skipping..."
+                                        buildSuccess = true  // Avoid retry if Jenkinsfile missing
                                     }
                                 }
-                                success = true  // If no exception, mark success
                             } catch (err) {
-                                echo "Build failed for ${dirName} on attempt ${attempt}: ${err}"
-                                if (attempt == 3) {
-                                    error("❌ ${dirName} failed after 3 attempts. Aborting pipeline.")
+                                echo "Build attempt ${attempts} for ${dirName} failed: ${err}"
+                                if (attempts >= 3) {
+                                    error "Failed to build ${dirName} after 3 attempts."
                                 } else {
                                     echo "Retrying ${dirName}..."
                                 }
