@@ -1,87 +1,77 @@
 pipeline {
     agent any
 
-    /* 
-       We know from your last debug that the folder you really want lives at:
-           /var/lib/jenkins/workspace/<your‑job‑name>/CI‑CD Pipelines/Samples
-       and that ${WORKSPACE} is “/var/lib/jenkins/workspace/<your‑job‑name>”.
-    */
     environment {
-        ABS_SAMPLES_DIR = "${WORKSPACE}/CI-CD Pipelines/Samples"
+        // WORKSPACE == /var/lib/jenkins/workspace/CI‑CD Pipelines
+        SAMPLES_DIR = "${WORKSPACE}/Samples"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // make sure your repo is in the workspace
                 checkout scm
             }
         }
 
         stage('Verify Samples Path') {
             steps {
-                // quick verify that the folder exists before we try to find inside it
                 sh '''
-                  echo "Workspace = $WORKSPACE"
-                  echo "Looking for Samples at: \"$ABS_SAMPLES_DIR\""
-                  if [ ! -d "$ABS_SAMPLES_DIR" ]; then
+                  echo "WORKSPACE = [$WORKSPACE]"
+                  echo "Checking for Samples at   : [$SAMPLES_DIR]"
+                  if [ ! -d "$SAMPLES_DIR" ]; then
                     echo "🔥 ERROR: Samples dir not found!"
                     ls -la "$WORKSPACE"
                     exit 1
                   fi
-                  echo "✅ Found Samples directory."
+                  echo "✅ Found Samples dir."
                 '''
             }
         }
 
-        stage('List Samples') {
+        stage('List Sample Folders') {
             steps {
                 script {
-                    // find all immediate subdirectories under the absolute path
                     SAMPLE_DIRS = sh(
-                        script:  "find \"${ABS_SAMPLES_DIR}\" -mindepth 1 -maxdepth 1 -type d -printf \"%f\\n\"",
+                        script:  "find \"$SAMPLES_DIR\" -mindepth 1 -maxdepth 1 -type d -printf \"%f\\n\"",
                         returnStdout: true
-                    ).trim().split('\n')
-
-                    echo "✅ Will build these samples: ${SAMPLE_DIRS}"
+                    ).trim().split("\\n")
+                    echo "🔍 Samples to build: ${SAMPLE_DIRS}"
                 }
             }
         }
 
-        stage('Build Each Sample (with up to 3 retries)') {
+        stage('Build Each Sample (3× retry)') {
             steps {
                 script {
-                    for (dirName in SAMPLE_DIRS) {
-                        echo "⏳ Starting build for sample: ${dirName}"
-                        def success = false
-                        def attempt = 0
+                    for (sample in SAMPLE_DIRS) {
+                        echo "⏳ Building sample: ${sample}"
+                        boolean built = false
+                        int attempt = 0
 
-                        while (!success && attempt < 3) {
+                        while (!built && attempt < 3) {
                             attempt++
-                            echo "➡️  Attempt #${attempt} for ${dirName}"
+                            echo "➡️  Attempt #${attempt} for ${sample}"
                             try {
-                                // use absolute path so we never get lost
-                                dir("${ABS_SAMPLES_DIR}/${dirName}") {
+                                dir("${SAMPLES_DIR}/${sample}") {
                                     if (fileExists('Jenkinsfile')) {
-                                        echo "   ▶️  Loading ${dirName}/Jenkinsfile"
+                                        echo "   ▶️  Loading Jenkinsfile in ${sample}"
                                         load 'Jenkinsfile'
                                     } else {
-                                        echo "   ⚠️  No Jenkinsfile here; skipping build."
+                                        echo "   ⚠️  No Jenkinsfile found—skipping ${sample}"
                                     }
                                 }
-                                success = true
-                                echo "✅ Build succeeded for ${dirName} on attempt ${attempt}"
+                                built = true
+                                echo "✅ ${sample} succeeded on attempt ${attempt}"
                             } catch (err) {
-                                echo "❌ Build failed for ${dirName} on attempt ${attempt}: ${err}"
+                                echo "❌ ${sample} failed on attempt ${attempt}: ${err}"
                                 if (attempt == 3) {
-                                    error("🚨 ${dirName} failed after 3 attempts — aborting.")
+                                    error("🚨 ${sample} failed after 3 attempts—aborting pipeline.")
                                 } else {
-                                    echo "🔄 Retrying ${dirName}..."
+                                    echo "🔄 Retrying ${sample}..."
                                 }
                             }
                         }
-
-                        echo "🏁 Finished build for sample: ${dirName}"
+                        echo "🏁 Done with ${sample}"
                     }
                 }
             }
@@ -90,7 +80,7 @@ pipeline {
 
     post {
         always {
-            echo "🚀 Pipeline complete. Check the logs above."
+            echo "🎉 Pipeline complete. Check above logs for details."
         }
     }
 }
