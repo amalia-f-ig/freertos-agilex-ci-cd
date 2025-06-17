@@ -2,76 +2,86 @@ pipeline {
     agent any
 
     environment {
-        SAMPLES_DIR = 'Dashboard/CI-CD Pipelines/Samples'
+        // adjust this to match the real path under your workspace
+        SAMPLES_DIR = 'jenkins/CI-CD Pipelines/Samples'
     }
 
     stages {
         stage('Checkout') {
             steps {
+                // pull down your GitHub repo
                 checkout scm
             }
         }
 
-        stage('Debug FS') {
-          steps {
-            sh '''
-              echo "WORKSPACE = $PWD"
-              ls -l .
-              echo "--- see Dashboard subdir ---"
-              ls -l Dashboard
-            '''
-          }
+        stage('Walk the FS (debug)') {
+            steps {
+                // one‑time debug: remove after you confirm the right path
+                sh '''
+                  echo "Workspace is: $PWD"
+                  echo ""
+                  echo "Directories up to depth 3:"
+                  find . -maxdepth 3 -type d
+                '''
+            }
         }
-        
 
         stage('List Samples') {
             steps {
                 script {
-                  SAMPLE_DIRS = sh(
-                    script: 'find "Dashboard/CI-CD Pipelines/Samples" -mindepth 1 -maxdepth 1 -type d -printf "%f\\n"',
-                    returnStdout: true
-                  ).trim().split('\n')
-                  echo "Found sample folders: ${SAMPLE_DIRS}"
-                }
+                    // find every immediate subdirectory under SAMPLES_DIR
+                    SAMPLE_DIRS = sh(
+                        script:  "find \"${SAMPLES_DIR}\" -mindepth 1 -maxdepth 1 -type d -printf \"%f\\n\"",
+                        returnStdout: true
+                    ).trim().split('\n')
 
+                    echo "✅ Found sample folders: ${SAMPLE_DIRS.join(', ')}"
+                }
             }
         }
 
-        stage('Build Each Sample') {
+        stage('Build Each Sample with Retry') {
             steps {
                 script {
                     for (dirName in SAMPLE_DIRS) {
-                        def buildSuccess = false
-                        def attempts = 0
-                        echo "==> Starting build for sample: ${dirName}"
+                        echo "⏳ Starting build for sample: ${dirName}"
+                        def success = false
+                        def attempt = 0
 
-                        while (!buildSuccess && attempts < 3) {
-                            attempts++
+                        while (!success && attempt < 3) {
+                            attempt++
+                            echo "➡️  Attempt #${attempt} for ${dirName}"
                             try {
                                 dir("${SAMPLES_DIR}/${dirName}") {
                                     if (fileExists('Jenkinsfile')) {
-                                        echo "Running Jenkinsfile inside ${dirName}, attempt ${attempts}"
+                                        echo "   ▶️  Loading ${dirName}/Jenkinsfile"
                                         load 'Jenkinsfile'
-                                        buildSuccess = true
                                     } else {
-                                        echo "No Jenkinsfile found in ${dirName}, skipping..."
-                                        buildSuccess = true  // Avoid retry if Jenkinsfile missing
+                                        echo "   ⚠️  No Jenkinsfile in ${dirName}, skipping build"
                                     }
                                 }
+                                success = true
+                                echo "✅ Build succeeded for ${dirName} on attempt ${attempt}"
                             } catch (err) {
-                                echo "Build attempt ${attempts} for ${dirName} failed: ${err}"
-                                if (attempts >= 3) {
-                                    error "Failed to build ${dirName} after 3 attempts."
+                                echo "❌ Build failed for ${dirName} on attempt ${attempt}: ${err}"
+                                if (attempt == 3) {
+                                    error("🚨 ${dirName} failed after 3 attempts — aborting")
                                 } else {
-                                    echo "Retrying ${dirName}..."
+                                    echo "🔄 Retrying ${dirName}..."
                                 }
                             }
                         }
 
-                        echo "<== Finished build for sample: ${dirName}"
+                        echo "🏁 Finished build for sample: ${dirName}"
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "All done. Check above logs for any failures."
         }
     }
 }
