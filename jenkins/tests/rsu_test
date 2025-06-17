@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel4/intelFPGA_pro/24.3/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel4/toolchain_13_3/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        CMAKE_PATH= '/home/intel4/Downloads/cmake-3.24.0-linux-x86_64/bin'
+        QUARTUS_ROOTDIR = '/home/intel6/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        CMAKE_PATH= '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        SSH_USER = 'intel4'
-        SSH_HOST = '192.168.40.98'
-        REMOTE_PATH = '/home/intel4/Jenkins'
+        SSH_USER = 'intel6'
+        SSH_HOST = '192.168.40.25'
+        REMOTE_PATH = '/home/intel6/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
@@ -34,7 +34,7 @@ pipeline {
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}
                     git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     git submodule update --init --recursive
 ENDSSH
                     """
@@ -48,8 +48,6 @@ ENDSSH
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git restore .
-                    pwd
                     patch -p1 --force < ${PATCH_PATH}
 ENDSSH
                     """
@@ -79,7 +77,7 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
@@ -148,11 +146,38 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 rsu_test.py 
+                    python3 rsu_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
             }
+        }
+
+        stage('Pull Test Results from Remote') {
+            steps {
+                script {
+                    sh """
+                    echo "=== Pulling test_results.txt from remote ==="
+                    scp \
+                      "${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt" \
+                      "${WORKSPACE}/test_results.txt"
+                    """
+                }
+            }
+        }
+        
+
+        stage('Archive Results') {
+            steps {
+                // Archive test_results.txt as the build artifact
+                archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
         }
     }
 }
