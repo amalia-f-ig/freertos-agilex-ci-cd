@@ -52,7 +52,7 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC2/oob2/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                        cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
+                        cp build/reboot_manager_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
  
                     '''
                 }
