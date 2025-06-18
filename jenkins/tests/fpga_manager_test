@@ -13,7 +13,7 @@ pipeline {
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/fcs_test.patch"
-        BLOCK_NAME = "fpga_mngr"
+        BLOCK_NAME = "fpga_manager"
     }
 
     stages {
@@ -71,7 +71,7 @@ ENDSSH
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
                     rm -rf build && cmake -B build -DSOF_PATH=/home/intel5/Jenkins/os.rtos.fpga.freertos/tools/RC2/oob2/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                    cp build/fpga_manager_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
+                    cp build/${BLOCK_NAME}_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
                     
 ENDSSH
                     """
