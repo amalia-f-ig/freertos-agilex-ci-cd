@@ -2,18 +2,18 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel5/altera_pro/25.1/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel5/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        CMAKE_PATH= '/home/intel5/Downloads/cmake-3.24.0-linux-x86_64/bin'
+        QUARTUS_ROOTDIR = '/home/intel6/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        CMAKE_PATH= '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        SSH_USER = 'intel5'
-        SSH_HOST = '192.168.55.58'
-        REMOTE_PATH = '/home/intel5/Jenkins'
+        SSH_USER = 'intel6'
+        SSH_HOST = '192.168.40.25'
+        REMOTE_PATH = '/home/intel6/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/fcs_test.patch"
-        BLOCK_NAME = "fcs"
+        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i2c_test.patch"
+        BLOCK_NAME = "i2c"
     }
 
     stages {
@@ -35,23 +35,8 @@ pipeline {
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}
                     git clone --branch feature/latest_altera_collaterals git@github.com:intel-collab/os.rtos.fpga.freertos.git
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     git submodule update --init --recursive
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Remote: Apply Patch') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git restore .
-                    pwd
-                    patch -p1 --force < ${PATCH_PATH}
 ENDSSH
                     """
                 }
@@ -85,8 +70,9 @@ ENDSSH
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel5/Jenkins/os.rtos.fpga.freertos/tools/RC2/oob2/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel6/Jenkins/os.rtos.fpga.freertos/tools/RC2/nand/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
                     cp build/${BLOCK_NAME}_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
+                    
 ENDSSH
                     """
                 }
@@ -139,24 +125,6 @@ ENDSSH
             }
         }
 
-//         stage('Remote: Flash key') {
-//             steps {
-//                 script {
-//                     sh """
-//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-//                     cd ${REMOTE_PATH}/Intel6_nand
-//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-//                     export CMAKE_PATH=${CMAKE_PATH}
-//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-//                     cd ${REMOTE_SCRIPT_PATH}/FCS
-//                     ./flash_key.sh
-// ENDSSH
-//                     """
-//                 }
-//             }
-//         }
-
         stage('Remote: Run Python Automation Script') {
             steps {
                 script {
@@ -166,7 +134,7 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 -u fcs_test.py > test_results.txt 2>&1
+                    python3 i2c_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
@@ -202,3 +170,21 @@ ENDSSH
     }
 }
 
+
+//         stage('Remote: Flash key') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_PATH}/Intel6_nand
+//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
+//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
+//                     export CMAKE_PATH=${CMAKE_PATH}
+//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
+//                     cd ${REMOTE_SCRIPT_PATH}/FCS
+//                     ./flash_key.sh
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
