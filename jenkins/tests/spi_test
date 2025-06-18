@@ -134,7 +134,7 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 i2c_test.py > test_results.txt 2>&1
+                    python3 spi_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
