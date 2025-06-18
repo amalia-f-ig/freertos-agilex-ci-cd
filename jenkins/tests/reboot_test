@@ -51,7 +51,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
-                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Intel6_nand/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC2/oob2/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
                         cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
  
                     '''
@@ -83,13 +83,14 @@ pipeline {
             }
         }
 
-        stage('Generate JIC image') {
+        stage('Flash image') {
             steps {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
-                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        echo "==== Flashing JIC Image ====" 
+                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                        quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
                     '''
                 }
             }
@@ -100,8 +101,8 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
-                        python3 power_cycle.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        echo "==== Power Cycle Device ===="
+                        python3 power_cycle.py 
                     '''
                 }
             }

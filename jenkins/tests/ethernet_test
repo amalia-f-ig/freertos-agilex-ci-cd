@@ -91,13 +91,14 @@ pipeline {
             }
         }
 
-        stage('Generate JIC image') {
+        stage('Flash image') {
             steps {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Generate JIC Image ====" >> ${WORKSPACE}/test_results.txt
-                        python3 generate_jic_image.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        echo "==== Flashing JIC Image ====" 
+                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                        quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
                     '''
                 }
             }
