@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel6/altera_pro/25.1/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel6/anurag/arm_ds/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        CMAKE_PATH= '/home/intel6/Downloads/cmake-3.24.0-linux-x86_64/bin'
+        QUARTUS_ROOTDIR = '/home/intel5/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel5/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        CMAKE_PATH= '/home/intel5/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        SSH_USER = 'intel6'
-        SSH_HOST = '192.168.40.25'
-        REMOTE_PATH = '/home/intel6/Jenkins'
+        SSH_USER = 'intel5'
+        SSH_HOST = '192.168.55.58'
+        REMOTE_PATH = '/home/intel5/Jenkins'
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
@@ -134,7 +134,7 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 fcs_test.py > test_results.txt 2>&1
+                    python3 i2c_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
@@ -168,8 +168,6 @@ ENDSSH
             archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
         }
     }
-}
-
 
 //         stage('Remote: Flash key') {
 //             steps {
@@ -188,3 +186,6 @@ ENDSSH
 //                 }
 //             }
 //         }
+
+}
+
