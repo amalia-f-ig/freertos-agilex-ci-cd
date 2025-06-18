@@ -85,7 +85,7 @@ ENDSSH
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel6/Jenkins/Intel6_nand/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel6/Jenkins/os.rtos.fpga.freertos/tools/RC2/oob2/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
                     cp build/${BLOCK_NAME}_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
                     
 ENDSSH
@@ -107,20 +107,19 @@ ENDSSH
             }
         }
 
-        stage('Remote: Generate JIC image') {
+        stage('Remote: Flash JIC image') {
             steps {
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
-                    echo "=== Generating JIC image ==="
-                    cd ${REMOTE_PATH}/Intel6_nand
+                    echo "=== Flashing JIC image ==="
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 generate_jic_image.py
+quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
 ENDSSH
                     """
                 }
