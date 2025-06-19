@@ -65,7 +65,7 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/${BLOCK_NAME}
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
@@ -99,7 +99,7 @@ ENDSSH
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "=== Flashing JIC image ==="
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests/build/qspi_atf_binaries
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
