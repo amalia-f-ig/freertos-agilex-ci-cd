@@ -51,7 +51,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
-                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/atf/seu/ghrd_a5ed065bb32ae6sr0_fpga_24_3.sof -G Ninja && ninja -C build qspi-image
+                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/atf/seu/ghrd_a5ed065bb32ae6sr0_fpga_24_3.sof -DATF_LOG_LEVEL=50 -G Ninja && ninja -C build qspi-image
                         cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
  
                     '''
