@@ -73,7 +73,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        echo "==== Switch Device Mode ===="
                         python3 pdk_control.py 
                     '''
                 }
@@ -98,7 +98,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Power Cycle Device ====" >> ${WORKSPACE}/test_results.txt
+                        echo "==== Power Cycle Device ===="
                         python3 power_cycle.py
                     '''
                 }

@@ -76,7 +76,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${SCRIPT_PATH}
-                        echo "==== Switch Device Mode ====" >> ${WORKSPACE}/test_results.txt
+                        echo "==== Switch Device Mode ===="
                         python3 pdk_control.py 
                     '''
                 }

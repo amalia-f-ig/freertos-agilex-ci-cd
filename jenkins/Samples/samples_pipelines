@@ -37,13 +37,19 @@ pipeline {
             )
             echo "🔷 DMA #${result.number} → ${result.result}"
 
-            dir("artifacts/DMA") {
+            dir('artifacts') {
+              sh 'mkdir -p DMA'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt DMA/dma_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -61,13 +67,19 @@ pipeline {
             )
             echo "🔷 FATFS #${result.number} → ${result.result}"
 
-            dir("artifacts/FATFS") {
+            dir('artifacts') {
+              sh 'mkdir -p FATFS'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt FATFS/fatfs_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -85,13 +97,19 @@ pipeline {
             )
             echo "🔷 MAILBOX #${result.number} → ${result.result}"
 
-            dir("artifacts/MAILBOX") {
+            dir('artifacts') {
+              sh 'mkdir -p MAILBOX'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/MAILBOX test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt MAILBOX/mailbox_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -109,13 +127,19 @@ pipeline {
             )
             echo "🔷 QSPI #${result.number} → ${result.result}"
 
-            dir("artifacts/QSPI") {
+            dir('artifacts') {
+              sh 'mkdir -p QSPI'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt QSPI/qspi_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -133,13 +157,19 @@ pipeline {
             )
             echo "🔷 REBOOT #${result.number} → ${result.result}"
 
-            dir("artifacts/REBOOT") {
+            dir('artifacts') {
+              sh 'mkdir -p REBOOT'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/REBOOT test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt REBOOT/reboot_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -157,13 +187,19 @@ pipeline {
             )
             echo "🔷 SDMMC #${result.number} → ${result.result}"
 
-            dir("artifacts/SDMMC") {
+            dir('artifacts') {
+              sh 'mkdir -p SDMMC'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt SDMMC/sdmmc_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -181,37 +217,49 @@ pipeline {
             )
             echo "🔷 SEU #${result.number} → ${result.result}"
 
-            dir("artifacts/SEU") {
+            dir('artifacts') {
+              sh 'mkdir -p SEU'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt SEU/seu_test_results.txt
+                fi
+              """
             }
           }
         }
       }
     }
 
-    stage('TIMER') {
+    stage('Timer') {
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
+              job: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',
               wait: true,
               propagate: false
             )
             echo "🔷 TIMER #${result.number} → ${result.result}"
 
-            dir("artifacts/TIMER") {
+            dir('artifacts') {
+              sh 'mkdir -p Timer'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt Timer/timer_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -223,19 +271,25 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
+              job: 'CI-CD Pipelines/Samples (new ATF)/USB Test',
               wait: true,
               propagate: false
             )
             echo "🔷 USB3 #${result.number} → ${result.result}"
 
-            dir("artifacts/USB3") {
+            dir('artifacts') {
+              sh 'mkdir -p USB'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt USB/usb_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -253,13 +307,19 @@ pipeline {
             )
             echo "🔷 WDT #${result.number} → ${result.result}"
 
-            dir("artifacts/WDT") {
+            dir('artifacts') {
+              sh 'mkdir -p WDT'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt WDT/wdt_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -271,19 +331,25 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
+              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',
               wait: true,
               propagate: false
             )
             echo "🔷 IOSSM #${result.number} → ${result.result}"
 
-            dir("artifacts/IOSSM") {
+            dir('artifacts') {
+              sh 'mkdir -p IOSSM'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt IOSSM/iossm_test_results.txt
+                fi
+              """
             }
           }
         }
@@ -301,13 +367,19 @@ pipeline {
             )
             echo "🔷 GPIO #${result.number} → ${result.result}"
 
-            dir("artifacts/GPIO") {
+            dir('artifacts') {
+              sh 'mkdir -p GPIO'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
-                selector: specific("${result.number}"),
-                filter: '**/*',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',
+                selector: specific("${r.number}"),
+                filter: 'test_results.txt',
                 optional: true
               )
+              sh """
+                if [ -f test_results.txt ]; then
+                  mv test_results.txt GPIO/gpio_test_results.txt
+                fi
+              """
             }
           }
         }
