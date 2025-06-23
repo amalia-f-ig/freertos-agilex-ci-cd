@@ -15,7 +15,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -35,7 +36,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -55,7 +57,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -75,7 +78,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -95,7 +99,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -115,7 +120,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -135,7 +141,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -155,7 +162,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -175,7 +183,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -195,7 +204,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -215,7 +225,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -235,7 +246,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
@@ -255,7 +267,8 @@ pipeline {
             copyArtifacts(
               projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
               selector: specific("${result.number}"),
-              filter: '**/*'
+              filter: '**/*',
+              optional: true
             )
           }
         }
