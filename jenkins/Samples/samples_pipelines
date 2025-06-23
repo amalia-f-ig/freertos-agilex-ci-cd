@@ -5,19 +5,30 @@ pipeline {
     stage('Bridge') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 Bridge #${result.number} → ${result.result}"
-          dir("artifacts/Bridge") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          // Trigger build
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 Bridge #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ Bridge build step error: ${e}"
+          }
+          // Copy artifacts
+          try {
+            dir("artifacts/Bridge") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ Bridge artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -26,19 +37,28 @@ pipeline {
     stage('DMA') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 DMA #${result.number} → ${result.result}"
-          dir("artifacts/DMA") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 DMA #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ DMA build step error: ${e}"
+          }
+          try {
+            dir("artifacts/DMA") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ DMA artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -47,19 +67,28 @@ pipeline {
     stage('FATFS') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 FATFS #${result.number} → ${result.result}"
-          dir("artifacts/FATFS") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 FATFS #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ FATFS build step error: ${e}"
+          }
+          try {
+            dir("artifacts/FATFS") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ FATFS artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -68,19 +97,28 @@ pipeline {
     stage('MAILBOX') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 MAILBOX #${result.number} → ${result.result}"
-          dir("artifacts/MAILBOX") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 MAILBOX #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ MAILBOX build step error: ${e}"
+          }
+          try {
+            dir("artifacts/MAILBOX") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ MAILBOX artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -89,19 +127,28 @@ pipeline {
     stage('QSPI') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 QSPI #${result.number} → ${result.result}"
-          dir("artifacts/QSPI") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 QSPI #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ QSPI build step error: ${e}"
+          }
+          try {
+            dir("artifacts/QSPI") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ QSPI artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -110,19 +157,28 @@ pipeline {
     stage('REBOOT') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 REBOOT #${result.number} → ${result.result}"
-          dir("artifacts/REBOOT") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 REBOOT #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ REBOOT build step error: ${e}"
+          }
+          try {
+            dir("artifacts/REBOOT") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ REBOOT artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -131,19 +187,28 @@ pipeline {
     stage('SDMMC') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 SDMMC #${result.number} → ${result.result}"
-          dir("artifacts/SDMMC") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 SDMMC #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ SDMMC build step error: ${e}"
+          }
+          try {
+            dir("artifacts/SDMMC") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ SDMMC artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -152,19 +217,28 @@ pipeline {
     stage('SEU') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 SEU #${result.number} → ${result.result}"
-          dir("artifacts/SEU") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 SEU #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ SEU build step error: ${e}"
+          }
+          try {
+            dir("artifacts/SEU") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ SEU artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -173,19 +247,28 @@ pipeline {
     stage('TIMER') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 TIMER #${result.number} → ${result.result}"
-          dir("artifacts/TIMER") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 TIMER #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ TIMER build step error: ${e}"
+          }
+          try {
+            dir("artifacts/TIMER") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ TIMER artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -194,19 +277,28 @@ pipeline {
     stage('USB3') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 USB3 #${result.number} → ${result.result}"
-          dir("artifacts/USB3") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 USB3 #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ USB3 build step error: ${e}"
+          }
+          try {
+            dir("artifacts/USB3") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ USB3 artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -215,19 +307,28 @@ pipeline {
     stage('WDT') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 WDT #${result.number} → ${result.result}"
-          dir("artifacts/WDT") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 WDT #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ WDT build step error: ${e}"
+          }
+          try {
+            dir("artifacts/WDT") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ WDT artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -236,19 +337,28 @@ pipeline {
     stage('IOSSM') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 IOSSM #${result.number} → ${result.result}"
-          dir("artifacts/IOSSM") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 IOSSM #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ IOSSM build step error: ${e}"
+          }
+          try {
+            dir("artifacts/IOSSM") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ IOSSM artifact copy skipped/failure: ${e}"
           }
         }
       }
@@ -257,19 +367,28 @@ pipeline {
     stage('GPIO') {
       steps {
         script {
-          def result = build(
-            job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
-            wait: true,
-            propagate: false
-          )
-          echo "🔷 GPIO #${result.number} → ${result.result}"
-          dir("artifacts/GPIO") {
-            copyArtifacts(
-              projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
-              selector: specific("${result.number}"),
-              filter: '**/*',
-              optional: true
+          def result = null
+          try {
+            result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
+              wait: true,
+              propagate: false
             )
+            echo "🔷 GPIO #${result.number} → ${result.result}"
+          } catch (e) {
+            echo "❌ GPIO build step error: ${e}"
+          }
+          try {
+            dir("artifacts/GPIO") {
+              copyArtifacts(
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
+                selector: specific(result?.number ?: ''),
+                filter: '**/*',
+                optional: true
+              )
+            }
+          } catch (e) {
+            echo "⚠️ GPIO artifact copy skipped/failure: ${e}"
           }
         }
       }
