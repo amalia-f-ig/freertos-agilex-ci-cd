@@ -1,67 +1,81 @@
 pipeline {
     agent any
     stages {
-        stage('Check for PRs') {
+        stage('Bridge Test') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        sh 'echo $GIT_PASS | gh auth login --with-token'
-                        def jsonOutput = sh(
-                            script: "gh pr list --repo https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git --base development --state open --json number,updatedAt,createdAt,title",
-                            returnStdout: true
-                        ).trim()
-                        
-                        def prs = readJSON text: jsonOutput
-                        def now = System.currentTimeMillis()
-
-                        def recentPRs = prs.findAll { pr ->
-                            def updatedTime = java.time.Instant.parse(pr.updatedAt).toEpochMilli()
-                            return (now - updatedTime) <= 15 * 60 * 1000 // 15 minutes
-                        }
-
-                        if (recentPRs && !recentPRs.isEmpty()) {
-                            echo "Recent PRs found:"
-                            recentPRs.each { echo "#${it.number}: ${it.title}" }
-                        } else {
-                            echo "No new or recently updated PRs. Skipping build."
-                            currentBuild.result = 'NOT_BUILT'
-                            error("No recent PRs")
-                        }
-                    }
-                }
+                build job: 'Samples (new ATF)/Bridge test', wait: true
             }
         }
 
-        stage('Run All Driver Tests') {
+        stage('DMA Test') {
             steps {
-                script {
-                    def jobNames = [
-                        'Bridge test',
-                        'DMA test',
-                        'FATFS Test',
-                        'FCS Driver Test',
-                        'FPGA Manager Test',
-                        'GPIO Test',
-                        'I2C Test',
-                        'I3C Test',
-                        'IOSS Test',
-                        'QSPI Test',
-                        'Reboot Test',
-                        'RSU Test',
-                        'SDM Mailbox Test'
-                    ]
+                build job: 'Samples (new ATF)/DMA test', wait: true
+            }
+        }
 
-                    jobNames.each { jobName ->
-                        echo "🔧 Triggering job: ${jobName}"
-                        try {
-                            build job: "Samples (new ATF)/${jobName}", wait: true
-                        } catch (e) {
-                            echo "❌ Job failed: ${jobName} - ${e}"
-                            currentBuild.result = 'FAILURE'
-                            throw e
-                        }
-                    }
-                }
+        stage('FATFS Test') {
+            steps {
+                build job: 'Samples (new ATF)/FATFS Test', wait: true
+            }
+        }
+
+        stage('FCS Driver Test') {
+            steps {
+                build job: 'Samples (new ATF)/FCS Driver Test', wait: true
+            }
+        }
+
+        stage('FPGA Manager Test') {
+            steps {
+                build job: 'Samples (new ATF)/FPGA Manager Test', wait: true
+            }
+        }
+
+        stage('GPIO Test') {
+            steps {
+                build job: 'Samples (new ATF)/GPIO Test', wait: true
+            }
+        }
+
+        stage('I2C Test') {
+            steps {
+                build job: 'Samples (new ATF)/I2C Test', wait: true
+            }
+        }
+
+        stage('I3C Test') {
+            steps {
+                build job: 'Samples (new ATF)/I3C Test', wait: true
+            }
+        }
+
+        stage('IOSS Test') {
+            steps {
+                build job: 'Samples (new ATF)/IOSS Test', wait: true
+            }
+        }
+
+        stage('QSPI Test') {
+            steps {
+                build job: 'Samples (new ATF)/QSPI Test', wait: true
+            }
+        }
+
+        stage('Reboot Test') {
+            steps {
+                build job: 'Samples (new ATF)/Reboot Test', wait: true
+            }
+        }
+
+        stage('RSU Test') {
+            steps {
+                build job: 'Samples (new ATF)/RSU Test', wait: true
+            }
+        }
+
+        stage('SDM Mailbox Test') {
+            steps {
+                build job: 'Samples (new ATF)/SDM Mailbox Test', wait: true
             }
         }
     }
