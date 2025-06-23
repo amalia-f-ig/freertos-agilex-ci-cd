@@ -2,52 +2,29 @@ pipeline {
   agent any
 
   stages {
-    // stage('Bridge') {
-    //   steps {
-    //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    //       script {
-    //         def result = build(
-    //           job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-    //           wait: true,
-    //           propagate: false
-    //         )
-    //         echo "🔷 Bridge #${result.number} → ${result.result}"
 
-    //         dir("artifacts/Bridge") {
-    //           copyArtifacts(
-    //             projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-    //             selector: specific("${result.number}"),
-    //             filter: '**/*',
-    //             optional: true
-    //           )
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    stage('DMA') {
+    stage('I3C') {
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+              job: 'CI-CD Pipelines/Samples (new ATF)/I3C Test',
               wait: true,
               propagate: false
             )
-            echo "🔷 DMA #${result.number} → ${result.result}"
+            echo "🔷 I3C #${result.number} → ${result.result}"
 
             dir('artifacts') {
-              sh 'mkdir -p DMA'
+              sh 'mkdir -p I3C'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/I3C Test',
                 selector: specific("${r.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
               sh """
                 if [ -f test_results.txt ]; then
-                  mv test_results.txt DMA/dma_test_results.txt
+                  mv test_results.txt I3C/i3c_test_results.txt
                 fi
               """
             }
@@ -56,28 +33,29 @@ pipeline {
       }
     }
 
-    stage('FATFS') {
+
+    stage('I2C') {
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+              job: 'CI-CD Pipelines/Samples (new ATF)/I2C Test',
               wait: true,
               propagate: false
             )
-            echo "🔷 FATFS #${result.number} → ${result.result}"
+            echo "🔷 I2C #${result.number} → ${result.result}"
 
             dir('artifacts') {
-              sh 'mkdir -p FATFS'
+              sh 'mkdir -p I2C'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS test',
+                projectName: 'CI-CD Pipelines/Samples (new ATF)/I2C Test',
                 selector: specific("${r.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
               sh """
                 if [ -f test_results.txt ]; then
-                  mv test_results.txt FATFS/fatfs_test_results.txt
+                  mv test_results.txt I2C/i2c_test_results.txt
                 fi
               """
             }
@@ -86,305 +64,6 @@ pipeline {
       }
     }
 
-    stage('MAILBOX') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 MAILBOX #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p MAILBOX'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/MAILBOX test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt MAILBOX/mailbox_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('QSPI') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 QSPI #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p QSPI'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt QSPI/qspi_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('REBOOT') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 REBOOT #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p REBOOT'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/REBOOT test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt REBOOT/reboot_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('SDMMC') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 SDMMC #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p SDMMC'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt SDMMC/sdmmc_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('SEU') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 SEU #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p SEU'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt SEU/seu_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('Timer') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 TIMER #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p Timer'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt Timer/timer_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('USB3') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/USB Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 USB3 #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p USB'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt USB/usb_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('WDT') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 WDT #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p WDT'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt WDT/wdt_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('IOSSM') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 IOSSM #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p IOSSM'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt IOSSM/iossm_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('GPIO') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 GPIO #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p GPIO'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt GPIO/gpio_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
 
   }
 
