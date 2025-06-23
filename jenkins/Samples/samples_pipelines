@@ -1,82 +1,71 @@
 pipeline {
-    agent any
-    stages {
-        stage('Bridge Test') {
-            steps {
-                build job: 'Samples (new ATF)/Bridge test', wait: true
-            }
-        }
-
-        stage('DMA Test') {
-            steps {
-                build job: 'Samples (new ATF)/DMA test', wait: true
-            }
-        }
-
-        stage('FATFS Test') {
-            steps {
-                build job: 'Samples (new ATF)/FATFS Test', wait: true
-            }
-        }
-
-        stage('FCS Driver Test') {
-            steps {
-                build job: 'Samples (new ATF)/FCS Driver Test', wait: true
-            }
-        }
-
-        stage('FPGA Manager Test') {
-            steps {
-                build job: 'Samples (new ATF)/FPGA Manager Test', wait: true
-            }
-        }
-
-        stage('GPIO Test') {
-            steps {
-                build job: 'Samples (new ATF)/GPIO Test', wait: true
-            }
-        }
-
-        stage('I2C Test') {
-            steps {
-                build job: 'Samples (new ATF)/I2C Test', wait: true
-            }
-        }
-
-        stage('I3C Test') {
-            steps {
-                build job: 'Samples (new ATF)/I3C Test', wait: true
-            }
-        }
-
-        stage('IOSS Test') {
-            steps {
-                build job: 'Samples (new ATF)/IOSS Test', wait: true
-            }
-        }
-
-        stage('QSPI Test') {
-            steps {
-                build job: 'Samples (new ATF)/QSPI Test', wait: true
-            }
-        }
-
-        stage('Reboot Test') {
-            steps {
-                build job: 'Samples (new ATF)/Reboot Test', wait: true
-            }
-        }
-
-        stage('RSU Test') {
-            steps {
-                build job: 'Samples (new ATF)/RSU Test', wait: true
-            }
-        }
-
-        stage('SDM Mailbox Test') {
-            steps {
-                build job: 'Samples (new ATF)/SDM Mailbox Test', wait: true
-            }
-        }
+  agent any
+  stages {
+    stage('Bridge Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test', wait: true
+      }
     }
+    stage('DMA Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/DMA test', wait: true
+      }
+    }
+    stage('FATFS Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test', wait: true
+      }
+    }
+    // … and so on for each:
+    stage('FCS Driver Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test', wait: true
+      }
+    }
+    stage('FPGA Manager Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test', wait: true
+      }
+    }
+    stage('GPIO Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test', wait: true
+      }
+    }
+    stage('I2C Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/I2C Test', wait: true
+      }
+    }
+    stage('I3C Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/I3C Test', wait: true
+      }
+    }
+    stage('IOSS Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test', wait: true
+      }
+    }
+    stage('QSPI Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test', wait: true
+      }
+    }
+    stage('Reboot Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test', wait: true
+      }
+    }
+    stage('RSU Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/RSU Test', wait: true
+      }
+    }
+    stage('SDM Mailbox Test') {
+      steps {
+        build job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test', wait: true
+      }
+    }
+  }
 }
