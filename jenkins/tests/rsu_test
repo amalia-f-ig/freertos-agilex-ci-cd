@@ -71,7 +71,7 @@ ENDSSH
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel4/Jenkins/os.rtos.fpga.freertos/tools/RC2/test_board/ghrd_a5ed065bb32ae6sr0_hps_debug.sof -G Ninja && ninja -C build qspi-image
+                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel4/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_debug2/ghrd_a5ed065bb32ae6sr0_hps_debug.sof -G Ninja && ninja -C build qspi-image
                     cp build/${BLOCK_NAME}_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
                     
 ENDSSH
