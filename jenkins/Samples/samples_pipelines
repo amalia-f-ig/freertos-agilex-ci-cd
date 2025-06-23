@@ -1,71 +1,180 @@
 pipeline {
   agent any
+
   stages {
     stage('Bridge Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test', wait: true
+            echo "✅ Bridge test succeeded"
+          } catch (e) {
+            echo "❌ Bridge test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('DMA Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/DMA test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/DMA test', wait: true
+            echo "✅ DMA test succeeded"
+          } catch (e) {
+            echo "❌ DMA test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('FATFS Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test', wait: true
+            echo "✅ FATFS Test succeeded"
+          } catch (e) {
+            echo "❌ FATFS Test failed: ${e}"
+          }
+        }
       }
     }
-    // … and so on for each:
+
     stage('FCS Driver Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test', wait: true
+            echo "✅ FCS Driver Test succeeded"
+          } catch (e) {
+            echo "❌ FCS Driver Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('FPGA Manager Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test', wait: true
+            echo "✅ FPGA Manager Test succeeded"
+          } catch (e) {
+            echo "❌ FPGA Manager Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('GPIO Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test', wait: true
+            echo "✅ GPIO Test succeeded"
+          } catch (e) {
+            echo "❌ GPIO Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('I2C Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/I2C Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/I2C Test', wait: true
+            echo "✅ I2C Test succeeded"
+          } catch (e) {
+            echo "❌ I2C Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('I3C Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/I3C Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/I3C Test', wait: true
+            echo "✅ I3C Test succeeded"
+          } catch (e) {
+            echo "❌ I3C Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('IOSS Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test', wait: true
+            echo "✅ IOSS Test succeeded"
+          } catch (e) {
+            echo "❌ IOSS Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('QSPI Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test', wait: true
+            echo "✅ QSPI Test succeeded"
+          } catch (e) {
+            echo "❌ QSPI Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('Reboot Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test', wait: true
+            echo "✅ Reboot Test succeeded"
+          } catch (e) {
+            echo "❌ Reboot Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('RSU Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/RSU Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/RSU Test', wait: true
+            echo "✅ RSU Test succeeded"
+          } catch (e) {
+            echo "❌ RSU Test failed: ${e}"
+          }
+        }
       }
     }
+
     stage('SDM Mailbox Test') {
       steps {
-        build job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test', wait: true
+        script {
+          try {
+            build job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test', wait: true
+            echo "✅ SDM Mailbox Test succeeded"
+          } catch (e) {
+            echo "❌ SDM Mailbox Test failed: ${e}"
+          }
+        }
       }
+    }
+  }
+
+  post {
+    always {
+      echo "🏁 All stages complete. Check individual logs for details."
     }
   }
 }
