@@ -118,7 +118,7 @@ ENDSSH
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_SCRIPT_PATH}
-                    python3 power_cycle.py
+                    python3 power_cycle_fcs.py
 ENDSSH
                     """
                 }
