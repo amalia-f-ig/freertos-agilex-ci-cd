@@ -2,190 +2,145 @@ pipeline {
     agent any
 
     environment {
-        QUARTUS_ROOTDIR = '/home/intel5/altera_pro/25.1/quartus'
-        ARM_GNU_TOOLCHAIN = '/home/intel5/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
-        CMAKE_PATH= '/home/intel5/Downloads/cmake-3.24.0-linux-x86_64/bin'
+        QUARTUS_ROOTDIR = '/home/intel-ldra/altera_pro/25.1/quartus'
+        ARM_GNU_TOOLCHAIN = '/home/intel-ldra/Zephyr_ATF_golden_ref_IGN/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-elf/bin'
+        CMAKE_PATH= '/home/intel-ldra/Downloads/cmake-3.24.0-linux-x86_64/bin'
         PATH = "${ARM_GNU_TOOLCHAIN}:${CMAKE_PATH}:${QUARTUS_ROOTDIR}/bin:${QUARTUS_ROOTDIR}/linux64:${QUARTUS_ROOTDIR}/../qsys/bin:${env.PATH}"
-        SSH_USER = 'intel5'
-        SSH_HOST = '192.168.55.58'
-        REMOTE_PATH = '/home/intel5/Jenkins'
-        REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
-        AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/fcs_test.patch"
+        WORKSPACE_PATH = "/home/intel-ldra/Jenkins"
+        REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
+        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
+        SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
+        SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
+        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
+        PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/fpga_manager_test.patch"
         BLOCK_NAME = "fpga_manager"
     }
 
     stages {
-
- stage('Remote: Cleanup') {
+        stage('Pre-clone Cleanup') {
             steps {
                 script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
-                    """
+                    sh '''
+                        if [ -d "${REPO_PATH}" ]; then
+                            rm -rf "${REPO_PATH}"
+                        fi
+                        rm -f "${WORKSPACE}/test_results.txt"
+                        rm -f "${WORKSPACE}/boot_log.txt"
+                    '''
+                }
+            }
+        }
+        stage('Clone Repositories') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git clone --branch feature/latest_altera_collaterals https://${GIT_USER}:${GIT_PASS}@github.com/intel-collab/os.rtos.fpga.freertos.git ${REPO_PATH}
+                            cd ${REPO_PATH}
+                            git submodule update --init --recursive
+                        '''
+                    }
                 }
             }
         }
 
-        stage('Remote: Clone Repository') {
+        stage('Apply Patch') {
             steps {
                 script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}
-                    git clone --branch feature/latest_altera_collaterals git@github.com:intel-collab/os.rtos.fpga.freertos.git
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
-                    git submodule update --init --recursive
-ENDSSH
-                    """
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                    '''
                 }
             }
         }
 
-        stage('Remote: Toolchain Setup') {
+        
+        stage('Build Binaries') {
             steps {
                 script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/Intel6_nand
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-ENDSSH
-                    """
+                    sh '''
+                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
+                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+                        cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
+                    '''
                 }
             }
         }
 
-
-        stage('Remote: Build') {
+        stage('Check Python Version and Installed Packages') {
             steps {
                 script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/${BLOCK_NAME}
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel5/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                    cp build/${BLOCK_NAME}_sample.bin ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/freertos_samples.bin
-                    
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Remote: Switch Device Mode') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 pdk_control.py
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Remote: Flash JIC image') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    set -e
-                    echo "=== Flashing JIC image ==="
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
-ENDSSH
-                    """
-                }
-            }
-        }
-
-
-        stage('Remote: Power cycle device') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 power_cycle.py
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Remote: Run Python Automation Script') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    set -e
-                    echo "==== Running Python Automation Script ===="
-                    cd ${REMOTE_AUTOMATION_SCRIPT}
-                    python3 -m pip install --user pyserial
-                    python3 fcs_test.py > test_results.txt 2>&1
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Pull Test Results from Remote') {
-            steps {
-                script {
-                    sh """
-                    echo "=== Pulling test_results.txt from remote ==="
-                    scp \
-                      "${SSH_USER}@${SSH_HOST}:${REMOTE_AUTOMATION_SCRIPT}/test_results.txt" \
-                      "${WORKSPACE}/test_results.txt"
-                    """
+                    sh '''
+                        python3 --version
+                        python3 -m pip list
+                    '''
                 }
             }
         }
         
-
-        stage('Archive Results') {
+        stage('Switch Device Mode') {
             steps {
-                // Archive test_results.txt as the build artifact
-                archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Switch Device Mode ===="
+                        python3 pdk_control.py 
+                    '''
+                }
+            }
+        }
+
+        stage('Flash image') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Flashing JIC Image ====" 
+                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                        quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
+                    '''
+                }
+            }
+        }
+
+        stage('Power cycle device') {
+            steps {
+                script {
+                    sh '''
+                        cd ${SCRIPT_PATH}
+                        echo "==== Power Cycle Device ===="
+                        python3 power_cycle.py
+                    '''
+                }
+            }
+        }
+
+    stage('Run python automation script') {
+            steps {
+                script {
+                    sh '''
+                        cd ${AUTOMATION_SCRIPT}
+                        echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
+                        export PYTHONUSERBASE=$HOME/.local
+                        python3 -m pip install --user pyserial 
+                        python3 fpga_manager_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                    '''
+                }
+            }
+        }
+
+        stage('Save Results') {
+            steps {
+                archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
             }
         }
     }
-
     post {
-        always {
-            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
-        }
+    always {
+        archiveArtifacts artifacts: 'boot_log.txt, test_results.txt', fingerprint: true
     }
-
-//         stage('Remote: Flash key') {
-//             steps {
-//                 script {
-//                     sh """
-//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-//                     cd ${REMOTE_PATH}/Intel6_nand
-//                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-//                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-//                     export CMAKE_PATH=${CMAKE_PATH}
-//                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-//                     cd ${REMOTE_SCRIPT_PATH}/FCS
-//                     ./flash_key.sh
-// ENDSSH
-//                     """
-//                 }
-//             }
-//         }
-
 }
 
+}
