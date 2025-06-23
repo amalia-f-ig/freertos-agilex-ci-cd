@@ -2,35 +2,29 @@ pipeline {
   agent any
 
   stages {
-    stage('Bridge') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 Bridge #${result.number} → ${result.result}"
+    // stage('Bridge') {
+    //   steps {
+    //     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    //       script {
+    //         def result = build(
+    //           job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+    //           wait: true,
+    //           propagate: false
+    //         )
+    //         echo "🔷 Bridge #${result.number} → ${result.result}"
 
-            dir('artifacts') {
-              sh 'mkdir -p Bridge'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt BRIDGE/bridge_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
+    //         dir("artifacts/Bridge") {
+    //           copyArtifacts(
+    //             projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+    //             selector: specific("${result.number}"),
+    //             filter: '**/*',
+    //             optional: true
+    //           )
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     stage('DMA') {
       steps {
@@ -384,36 +378,6 @@ pipeline {
               sh """
                 if [ -f test_results.txt ]; then
                   mv test_results.txt GPIO/gpio_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('FPGA Manager') {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 FPGA Manager #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p FPGA_Manager'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',
-                selector: specific("${r.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt FPGA_Manager/fpga_manager_test_results.txt
                 fi
               """
             }
