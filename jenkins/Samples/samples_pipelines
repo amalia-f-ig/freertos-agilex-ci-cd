@@ -2,170 +2,261 @@ pipeline {
   agent any
 
   stages {
-    stage('Bridge Test') {
+    stage('Bridge') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test', wait: true
-            echo "✅ Bridge test succeeded"
-          } catch (e) {
-            echo "❌ Bridge test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 Bridge #${result.number} → ${result.result}"
+          dir("artifacts/Bridge") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('DMA Test') {
+    stage('DMA') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/DMA test', wait: true
-            echo "✅ DMA test succeeded"
-          } catch (e) {
-            echo "❌ DMA test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 DMA #${result.number} → ${result.result}"
+          dir("artifacts/DMA") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('FATFS Test') {
+    stage('FATFS') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test', wait: true
-            echo "✅ FATFS Test succeeded"
-          } catch (e) {
-            echo "❌ FATFS Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 FATFS #${result.number} → ${result.result}"
+          dir("artifacts/FATFS") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('FCS Driver Test') {
+    stage('MAILBOX') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test', wait: true
-            echo "✅ FCS Driver Test succeeded"
-          } catch (e) {
-            echo "❌ FCS Driver Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 MAILBOX #${result.number} → ${result.result}"
+          dir("artifacts/MAILBOX") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('FPGA Manager Test') {
+    stage('QSPI') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test', wait: true
-            echo "✅ FPGA Manager Test succeeded"
-          } catch (e) {
-            echo "❌ FPGA Manager Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 QSPI #${result.number} → ${result.result}"
+          dir("artifacts/QSPI") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('GPIO Test') {
+    stage('REBOOT') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test', wait: true
-            echo "✅ GPIO Test succeeded"
-          } catch (e) {
-            echo "❌ GPIO Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 REBOOT #${result.number} → ${result.result}"
+          dir("artifacts/REBOOT") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('I2C Test') {
+    stage('SDMMC') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/I2C Test', wait: true
-            echo "✅ I2C Test succeeded"
-          } catch (e) {
-            echo "❌ I2C Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 SDMMC #${result.number} → ${result.result}"
+          dir("artifacts/SDMMC") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('I3C Test') {
+    stage('SEU') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/I3C Test', wait: true
-            echo "✅ I3C Test succeeded"
-          } catch (e) {
-            echo "❌ I3C Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 SEU #${result.number} → ${result.result}"
+          dir("artifacts/SEU") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('IOSS Test') {
+    stage('TIMER') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test', wait: true
-            echo "✅ IOSS Test succeeded"
-          } catch (e) {
-            echo "❌ IOSS Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 TIMER #${result.number} → ${result.result}"
+          dir("artifacts/TIMER") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/TIMER Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('QSPI Test') {
+    stage('USB3') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test', wait: true
-            echo "✅ QSPI Test succeeded"
-          } catch (e) {
-            echo "❌ QSPI Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 USB3 #${result.number} → ${result.result}"
+          dir("artifacts/USB3") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/USB3 Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('Reboot Test') {
+    stage('WDT') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test', wait: true
-            echo "✅ Reboot Test succeeded"
-          } catch (e) {
-            echo "❌ Reboot Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 WDT #${result.number} → ${result.result}"
+          dir("artifacts/WDT") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('RSU Test') {
+    stage('IOSSM') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/RSU Test', wait: true
-            echo "✅ RSU Test succeeded"
-          } catch (e) {
-            echo "❌ RSU Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 IOSSM #${result.number} → ${result.result}"
+          dir("artifacts/IOSSM") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSS Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
     }
 
-    stage('SDM Mailbox Test') {
+    stage('GPIO') {
       steps {
         script {
-          try {
-            build job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test', wait: true
-            echo "✅ SDM Mailbox Test succeeded"
-          } catch (e) {
-            echo "❌ SDM Mailbox Test failed: ${e}"
+          def result = build(
+            job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
+            wait: true,
+            propagate: false
+          )
+          echo "🔷 GPIO #${result.number} → ${result.result}"
+          dir("artifacts/GPIO") {
+            copyArtifacts(
+              projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
+              selector: specific("${result.number}"),
+              filter: '**/*'
+            )
           }
         }
       }
@@ -174,7 +265,8 @@ pipeline {
 
   post {
     always {
-      echo "🏁 All stages complete. Check individual logs for details."
+      echo "🏁 All stages complete"
+      archiveArtifacts artifacts: 'artifacts/**/*', allowEmptyArchive: true
     }
   }
 }
