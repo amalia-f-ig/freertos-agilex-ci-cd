@@ -17,7 +17,7 @@ pipeline {
               sh 'mkdir -p Bridge'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -47,7 +47,7 @@ pipeline {
               sh 'mkdir -p DMA'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -77,7 +77,7 @@ pipeline {
               sh 'mkdir -p FATFS'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -107,7 +107,7 @@ pipeline {
               sh 'mkdir -p MAILBOX'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/MAILBOX test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -137,7 +137,7 @@ pipeline {
               sh 'mkdir -p QSPI'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -167,7 +167,7 @@ pipeline {
               sh 'mkdir -p REBOOT'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/REBOOT test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -197,7 +197,7 @@ pipeline {
               sh 'mkdir -p SDMMC'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -227,7 +227,7 @@ pipeline {
               sh 'mkdir -p SEU'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -257,7 +257,7 @@ pipeline {
               sh 'mkdir -p Timer'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -287,7 +287,7 @@ pipeline {
               sh 'mkdir -p USB'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/USB test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -317,7 +317,7 @@ pipeline {
               sh 'mkdir -p WDT'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -347,7 +347,7 @@ pipeline {
               sh 'mkdir -p IOSSM'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -377,7 +377,7 @@ pipeline {
               sh 'mkdir -p GPIO'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
@@ -407,7 +407,7 @@ pipeline {
               sh 'mkdir -p FPGA_Manager'
               copyArtifacts(
                 projectName: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',
-                selector: specific("${r.number}"),
+                selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
               )
