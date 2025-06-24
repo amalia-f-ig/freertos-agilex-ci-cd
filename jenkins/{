@@ -1,0 +1,630 @@
+Script started on 2025-06-24 18:23:45+05:30 [TERM="xterm-256color" TTY="/dev/pts/13" COLUMNS="175" LINES="19"]
+[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ ^C[?2004l[?2004h[?2004l
+[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ git diff[K[K[K[Klog
+[?2004l[?1h=[33mcommit 30ac6475993b14d04e3f8bf6fc78b93382f2c450[m[33m ([m[1;36mHEAD -> [m[1;32msamples_pipelines[m[33m)[m[m
+Author: amalia.f <amalia.f@ignitarium.com>[m
+Date:   Tue Jun 24 15:25:58 2025 +0530[m
+[m
+    new[m
+[m
+[33mcommit 84e3636084017653b6fd296004f65f01d69994c4[m[m
+Author: amalia.f <amalia.f@ignitarium.com>[m
+Date:   Tue Jun 24 14:48:18 2025 +0530[m
+[m
+    new[m
+[m
+[33mcommit 920a9491c4998d77937315a145814b465e7ae443[m[m
+Author: amalia.f <amalia.f@ignitarium.com>[m
+Date:   Tue Jun 24 14:34:15 2025 +0530[m
+[m
+    new[m
+[m
+:[K[K[?1l>[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ git diff [7m84e3636084017653b6fd296004f65f01d69994c4[27m84e3636084017653b6fd296004f65f01d69994c4
+[?2004l[?1h=[1mdiff --git a/jenkins/Samples/enablement_blocks_ldra b/jenkins/Samples/enablement_blocks_ldra[m[m
+[1mindex 09df339..dd1474d 100644[m[m
+[1m--- a/jenkins/Samples/enablement_blocks_ldra[m[m
+[1m+++ b/jenkins/Samples/enablement_blocks_ldra[m[m
+[36m@@ -1,8 +1,26 @@[m[m
+ pipeline {[m[m
+   agent any[m[m
+ [m[m
+[32m+[m[32m  parameters {[m[m
+[32m+[m[32m    booleanParam(name: 'Bridge',        defaultValue: true,  description: 'Run Bridge stage')[m[m
+[32m+[m[32m    booleanParam(name: 'DMA',           defaultValue: true,  description: 'Run DMA stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FATFS',         defaultValue: true,  description: 'Run FATFS stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FPGA_Manager',  defaultValue: true,  description: 'Run FPGA Manager stage')[m[m
+[32m+[m[32m    booleanParam(name: 'GPIO',          defaultValue: true,  description: 'Run GPIO stage')[m[m
+[32m+[m[32m    booleanParam(name: 'IOSSM',         defaultValue: true,  description: 'Run IOSSM stage')[m[m
+[32m+[m[32m    booleanParam(name: 'QSPI',          defaultValue: true,  description: 'Run QSPI stage')[m[m
+[32m+[m[32m    booleanParam(name: 'REBOOT',        defaultValue: true,  description: 'Run Reboot stage')[m[m
+[32m+[m[32m    booleanParam(name: 'SDM_Mailbox',   defaultValue: true,  description: 'Run SDM Mailbox stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SDMMC',         defaultValue: true,  description: 'Run SDMMC stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SEU',           defaultValue: true,  description: 'Run SEU stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'TIMER',         defaultValue: true,  description: 'Run Timer stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'USB',           defaultValue: true,  description: 'Run USB stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'WDT',           defaultValue: true,  description: 'Run WDT stage')[m[m
+:[K[K[32m+[m[32m  }[m[m
+:[K[K[32m+[m[m
+:[K[K   stages {[m[m
+:[K[K     stage('Bridge') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.Bridge } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -33,6 +51,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('DMA') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.DMA } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -63,6 +82,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('FATFS') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.FATFS } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -93,6 +113,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('MAILBOX') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SDM_Mailbox } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -106,7 +127,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p MAILBOX'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/MAILBOX test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -123,6 +144,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('QSPI') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.QSPI } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -136,7 +158,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p QSPI'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -153,6 +175,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('REBOOT') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.REBOOT } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -166,7 +189,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p REBOOT'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/REBOOT test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -183,6 +206,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('SDMMC') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SDMMC } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -196,7 +220,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p SDMMC'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -213,6 +237,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('SEU') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SEU } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -226,7 +251,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p SEU'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -243,6 +268,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('Timer') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.TIMER } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -256,7 +282,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p Timer'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -273,6 +299,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('USB3') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.USB } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -286,7 +313,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p USB'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -303,6 +330,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('WDT') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.WDT } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -316,7 +344,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p WDT'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -333,12 +361,13 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('IOSSM') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.IOSSM } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K             def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[32m+[m[32m              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[41m [m[m
+:[K[K[32m+[m[32m              wait: true,[m[41m [m[m
+:[K[K               propagate: false[m[m
+:[K[K             )[m[m
+:[K[K             echo "🔷 IOSSM #${result.number} → ${result.result}"[m[m
+:[K[K[36m@@ -346,7 +375,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p IOSSM'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -362,66 +391,6 @@[m [mpipeline {[m[m
+:[K[K       }[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K[31m-    stage('GPIO') {[m[m
+:[K[K[31m-      steps {[m[m
+:[K[K[31m-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K[31m-          script {[m[m
+:[K[K[31m-            def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[31m-              propagate: false[m[m
+:[K[K[31m-            )[m[m
+:[K[K[31m-            echo "🔷 GPIO #${result.number} → ${result.result}"[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-            dir('artifacts') {[m[m
+:[K[K[31m-              sh 'mkdir -p GPIO'[m[m
+:[K[K[31m-              copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',[m[m
+:[K[K[31m-                selector: specific("${result.number}"),[m[m
+:[K[K[31m-                filter: 'test_results.txt',[m[m
+:[K[K[31m-                optional: true[m[m
+:[K[K[31m-              )[m[m
+:[K[K[31m-              sh """[m[m
+:[K[K[31m-                if [ -f test_results.txt ]; then[m[m
+:[K[K[31m-                  mv test_results.txt GPIO/gpio_test_results.txt[m[m
+:[K[K[31m-                fi[m[m
+:[K[K[31m-              """[m[m
+:[K[K[31m-            }[m[m
+:[K[K[31m-          }[m[m
+:[K[K[31m-        }[m[m
+:[K[K[31m-      }[m[m
+:[K[K[31m-    }[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-    stage('FPGA Manager') {[m[m
+:[K[K[31m-      steps {[m[m
+:[K[K[31m-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K[31m-          script {[m[m
+:[K[K[31m-            def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[31m-              propagate: false[m[m
+:[K[K[31m-            )[m[m
+:[K[K[31m-            echo "🔷 FPGA Manager #${result.number} → ${result.result}"[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-            dir('artifacts') {[m[m
+:[K[K[31m-              sh 'mkdir -p FPGA_Manager'[m[m
+:[K[K[31m-              copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',[m[m
+:[K[K[31m-                selector: specific("${result.number}"),[m[m
+:[K[K[31m-                filter: 'test_results.txt',[m[m
+:[K[K[31m-                optional: true[m[m
+:[K[K[31m-              )[m[m
+:[K[K[31m-              sh """[m[m
+:[K[K[31m-                if [ -f test_results.txt ]; then[m[m
+:[K[K[31m-                  mv test_results.txt FPGA_Manager/fpga_manager_test_results.txt[m[m
+:[K[K[31m-                fi[m[m
+:[K[K[31m-              """[m[m
+:[K[K[31m-            }[m[m
+:[K[K[31m-          }[m[m
+:[K[K[31m-        }[m[m
+:[K[K[31m-      }[m[m
+:[K[K[31m-    }[m[m
+:[K[K[31m-[m[m
+:[K[K   }[m[m
+:[K[K [m[m
+:[K[K   post {[m[m
+:[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[?1l>[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ git reste [K[K[Ket --hard [7m84e3636084017653b6fd296004f65f01d69994c4[27m84e3636084017653b6fd296004f65f01d69994c4
+[?2004lHEAD is now at 84e3636 new
+[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ git diff
+[?2004l[?1h=[1mdiff --git a/jenkins/Samples/enablement_blocks_ldra b/jenkins/Samples/enablement_blocks_ldra[m[m
+[1mindex 09df339..dd1474d 100644[m[m
+[1m--- a/jenkins/Samples/enablement_blocks_ldra[m[m
+[1m+++ b/jenkins/Samples/enablement_blocks_ldra[m[m
+[36m@@ -1,8 +1,26 @@[m[m
+ pipeline {[m[m
+   agent any[m[m
+ [m[m
+[32m+[m[32m  parameters {[m[m
+[32m+[m[32m    booleanParam(name: 'Bridge',        defaultValue: true,  description: 'Run Bridge stage')[m[m
+[32m+[m[32m    booleanParam(name: 'DMA',           defaultValue: true,  description: 'Run DMA stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FATFS',         defaultValue: true,  description: 'Run FATFS stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FPGA_Manager',  defaultValue: true,  description: 'Run FPGA Manager stage')[m[m
+[32m+[m[32m    booleanParam(name: 'GPIO',          defaultValue: true,  description: 'Run GPIO stage')[m[m
+[32m+[m[32m    booleanParam(name: 'IOSSM',         defaultValue: true,  description: 'Run IOSSM stage')[m[m
+[32m+[m[32m    booleanParam(name: 'QSPI',          defaultValue: true,  description: 'Run QSPI stage')[m[m
+[32m+[m[32m    booleanParam(name: 'REBOOT',        defaultValue: true,  description: 'Run Reboot stage')[m[m
+[32m+[m[32m    booleanParam(name: 'SDM_Mailbox',   defaultValue: true,  description: 'Run SDM Mailbox stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SDMMC',         defaultValue: true,  description: 'Run SDMMC stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SEU',           defaultValue: true,  description: 'Run SEU stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'TIMER',         defaultValue: true,  description: 'Run Timer stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'USB',           defaultValue: true,  description: 'Run USB stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'WDT',           defaultValue: true,  description: 'Run WDT stage')[m[m
+:[K[K[32m+[m[32m  }[m[m
+:[K[K[32m+[m[m
+:[K[K   stages {[m[m
+:[K[K     stage('Bridge') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.Bridge } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -33,6 +51,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('DMA') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.DMA } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -63,6 +82,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('FATFS') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.FATFS } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -93,6 +113,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('MAILBOX') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SDM_Mailbox } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -106,7 +127,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p MAILBOX'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/MAILBOX test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -123,6 +144,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('QSPI') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.QSPI } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -136,7 +158,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p QSPI'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -153,6 +175,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('REBOOT') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.REBOOT } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -166,7 +189,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p REBOOT'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/REBOOT test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -183,6 +206,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('SDMMC') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SDMMC } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -196,7 +220,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p SDMMC'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -213,6 +237,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('SEU') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SEU } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -226,7 +251,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p SEU'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -243,6 +268,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('Timer') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.TIMER } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -256,7 +282,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p Timer'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -273,6 +299,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('USB3') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.USB } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -286,7 +313,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p USB'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -303,6 +330,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('WDT') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.WDT } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -316,7 +344,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p WDT'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -333,12 +361,13 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('IOSSM') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.IOSSM } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K             def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[32m+[m[32m              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[41m [m[m
+:[K[K[32m+[m[32m              wait: true,[m[41m [m[m
+:[K[K               propagate: false[m[m
+:[K[K             )[m[m
+:[K[K             echo "🔷 IOSSM #${result.number} → ${result.result}"[m[m
+:[K[K[36m@@ -346,7 +375,7 @@[m [mpipeline {[m[m
+:[K[K             dir('artifacts') {[m[m
+:[K[K               sh 'mkdir -p IOSSM'[m[m
+:[K[K               copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM test',[m[m
+:[K[K[32m+[m[32m                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',[m[m
+:[K[K                 selector: specific("${result.number}"),[m[m
+:[K[K                 filter: 'test_results.txt',[m[m
+:[K[K                 optional: true[m[m
+:[K[K[36m@@ -362,66 +391,6 @@[m [mpipeline {[m[m
+:[K[K       }[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K[31m-    stage('GPIO') {[m[m
+:[K[K[31m-      steps {[m[m
+:[K[K[31m-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K[31m-          script {[m[m
+:[K[K[31m-            def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[31m-              propagate: false[m[m
+:[K[K[31m-            )[m[m
+:[K[K[31m-            echo "🔷 GPIO #${result.number} → ${result.result}"[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-            dir('artifacts') {[m[m
+:[K[K[31m-              sh 'mkdir -p GPIO'[m[m
+:[K[K[31m-              copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',[m[m
+:[K[K[31m-                selector: specific("${result.number}"),[m[m
+:[K[K[31m-                filter: 'test_results.txt',[m[m
+:[K[K[31m-                optional: true[m[m
+:[K[K[31m-              )[m[m
+:[K[K[31m-              sh """[m[m
+:[K[K[31m-                if [ -f test_results.txt ]; then[m[m
+:[K[K[31m-                  mv test_results.txt GPIO/gpio_test_results.txt[m[m
+:[K[K[31m-                fi[m[m
+:[K[K[31m-              """[m[m
+:[K[K[31m-            }[m[m
+:[K[K[31m-          }[m[m
+:[K[K[31m-        }[m[m
+:[K[K[31m-      }[m[m
+:[K[K[31m-    }[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-    stage('FPGA Manager') {[m[m
+:[K[K[31m-      steps {[m[m
+:[K[K[31m-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K[31m-          script {[m[m
+:[K[K[31m-            def result = build([m[m
+:[K[K[31m-              job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',[m[m
+:[K[K[31m-              wait: true,[m[m
+:[K[K[31m-              propagate: false[m[m
+:[K[K[31m-            )[m[m
+:[K[K[31m-            echo "🔷 FPGA Manager #${result.number} → ${result.result}"[m[m
+:[K[K[31m-[m[m
+:[K[K[31m-            dir('artifacts') {[m[m
+:[K[K[31m-              sh 'mkdir -p FPGA_Manager'[m[m
+:[K[K[31m-              copyArtifacts([m[m
+:[K[K[31m-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',[m[m
+:[K[K[31m-                selector: specific("${result.number}"),[m[m
+:[K[K[31m-                filter: 'test_results.txt',[m[m
+:[K[K[31m-                optional: true[m[m
+:[K[K[31m-              )[m[m
+:[K[K[31m-              sh """[m[m
+:[K[K[31m-                if [ -f test_results.txt ]; then[m[m
+:[K[K[31m-                  mv test_results.txt FPGA_Manager/fpga_manager_test_results.txt[m[m
+:[K[K[31m-                fi[m[m
+:[K[K[31m-              """[m[m
+:[K[K[31m-            }[m[m
+:[K[K[31m-          }[m[m
+:[K[K[31m-        }[m[m
+:[K[K[31m-      }[m[m
+:[K[K[31m-    }[m[m
+:[K[K[31m-[m[m
+:[K[K   }[m[m
+:[K[K [m[m
+:[K[K   post {[m[m
+:[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[K[7m(END)[27m[K[K[?1l>[?2004h]0;amaliaf@IGN-KOC-LP-0321: ~/Intel/freertos-agilex-ci-cd/jenkins[01;32mamaliaf@IGN-KOC-LP-0321[00m:[01;34m~/Intel/freertos-agilex-ci-cd/jenkins[00m$ git diff
+[?2004l[?1h=[1mdiff --git a/jenkins/Samples/enablement_blocks_ldra b/jenkins/Samples/enablement_blocks_ldra[m[m
+[1mindex 09df339..dd1474d 100644[m[m
+[1m--- a/jenkins/Samples/enablement_blocks_ldra[m[m
+[1m+++ b/jenkins/Samples/enablement_blocks_ldra[m[m
+[36m@@ -1,8 +1,26 @@[m[m
+ pipeline {[m[m
+   agent any[m[m
+ [m[m
+[32m+[m[32m  parameters {[m[m
+[32m+[m[32m    booleanParam(name: 'Bridge',        defaultValue: true,  description: 'Run Bridge stage')[m[m
+[32m+[m[32m    booleanParam(name: 'DMA',           defaultValue: true,  description: 'Run DMA stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FATFS',         defaultValue: true,  description: 'Run FATFS stage')[m[m
+[32m+[m[32m    booleanParam(name: 'FPGA_Manager',  defaultValue: true,  description: 'Run FPGA Manager stage')[m[m
+[32m+[m[32m    booleanParam(name: 'GPIO',          defaultValue: true,  description: 'Run GPIO stage')[m[m
+[32m+[m[32m    booleanParam(name: 'IOSSM',         defaultValue: true,  description: 'Run IOSSM stage')[m[m
+[32m+[m[32m    booleanParam(name: 'QSPI',          defaultValue: true,  description: 'Run QSPI stage')[m[m
+[32m+[m[32m    booleanParam(name: 'REBOOT',        defaultValue: true,  description: 'Run Reboot stage')[m[m
+[32m+[m[32m    booleanParam(name: 'SDM_Mailbox',   defaultValue: true,  description: 'Run SDM Mailbox stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SDMMC',         defaultValue: true,  description: 'Run SDMMC stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'SEU',           defaultValue: true,  description: 'Run SEU stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'TIMER',         defaultValue: true,  description: 'Run Timer stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'USB',           defaultValue: true,  description: 'Run USB stage')[m[m
+:[K[K[32m+[m[32m    booleanParam(name: 'WDT',           defaultValue: true,  description: 'Run WDT stage')[m[m
+:[K[K[32m+[m[32m  }[m[m
+:[K[K[32m+[m[m
+:[K[K   stages {[m[m
+:[K[K     stage('Bridge') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.Bridge } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -33,6 +51,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('DMA') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.DMA } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -63,6 +82,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('FATFS') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.FATFS } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {[m[m
+:[K[K           script {[m[m
+:[K[K[36m@@ -93,6 +113,7 @@[m [mpipeline {[m[m
+:[K[K     }[m[m
+:[K[K [m[m
+:[K[K     stage('MAILBOX') {[m[m
+:[K[K[32m+[m[32m      when { expression { params.SDM_Mailbox } }[m[m
+:[K[K       steps {[m[m
+:[K[K         catchError(buildResult: 'SUCCESS
