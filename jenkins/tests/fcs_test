@@ -79,18 +79,18 @@ pipeline {
 //             }
 //         }
 
-        stage('Remote: Switch Device Mode') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}
-                    python3 pdk_control.py
-ENDSSH
-                    """
-                }
-            }
-        }
+//         stage('Remote: Switch Device Mode') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_SCRIPT_PATH}
+//                     python3 pdk_control.py
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
 
 //         stage('Remote: Flash JIC image') {
 //             steps {
