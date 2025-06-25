@@ -12,7 +12,6 @@ pipeline {
     booleanParam(name: 'REBOOT',        defaultValue: true,  description: 'Run Reboot stage')
     booleanParam(name: 'SDM_Mailbox',   defaultValue: true,  description: 'Run SDM Mailbox stage')
     booleanParam(name: 'SDMMC',         defaultValue: true,  description: 'Run SDMMC stage')
-    booleanParam(name: 'SEU',           defaultValue: true,  description: 'Run SEU stage')
     booleanParam(name: 'TIMER',         defaultValue: true,  description: 'Run Timer stage')
     booleanParam(name: 'USB',           defaultValue: true,  description: 'Run USB stage')
     booleanParam(name: 'WDT',           defaultValue: true,  description: 'Run WDT stage')
@@ -228,37 +227,6 @@ pipeline {
               sh """
                 if [ -f test_results.txt ]; then
                   mv test_results.txt SDMMC/sdmmc_test_results.txt
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    stage('SEU') {
-      when { expression { params.SEU } }
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          script {
-            def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-              wait: true,
-              propagate: false
-            )
-            echo "🔷 SEU #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p SEU'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt SEU/seu_test_results.txt
                 fi
               """
             }
