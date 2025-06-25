@@ -1,0 +1,48 @@
+pipeline {
+  agent any
+
+  parameters {
+    booleanParam(name: 'SEU', defaultValue: true, description: 'Run SEU stage')
+    booleanParam(name: 'FCS', defaultValue: true, description: 'Run FCS stage')
+  }
+
+  stages {
+    stage('SEU') {
+      when { expression { params.SEU } }
+      steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 SEU #${result.number} → ${result.result}"
+          }
+        }
+      }
+    }
+
+    stage('FCS') {
+      when { expression { params.FCS } }
+      steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 FCS #${result.number} → ${result.result}"
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "🏁 SEU & FCS pipeline complete"
+    }
+  }
+}
