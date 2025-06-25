@@ -29,21 +29,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 Bridge #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p Bridge'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/Bridge test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt BRIDGE/bridge_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -60,21 +45,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 DMA #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p DMA'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/DMA test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt DMA/dma_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -91,21 +61,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 FATFS #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p FATFS'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/FATFS test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt FATFS/fatfs_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -122,21 +77,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 MAILBOX #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p MAILBOX'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/SDM Mailbox Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt MAILBOX/mailbox_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -153,21 +93,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 QSPI #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p QSPI'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/QSPI Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt QSPI/qspi_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -184,21 +109,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 REBOOT #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p REBOOT'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/Reboot Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt REBOOT/reboot_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -215,21 +125,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 SDMMC #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p SDMMC'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/SDMMC Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt SDMMC/sdmmc_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -246,21 +141,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 Timer #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p Timer'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/Timer test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt Timer/timer_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -277,21 +157,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 USB3 #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p USB'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/USB Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt USB/usb_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -308,21 +173,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 WDT #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p WDT'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/WDT Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt WDT/wdt_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -339,21 +189,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 IOSSM #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p IOSSM'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/IOSSM Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt IOSSM/iossm_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -370,21 +205,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 GPIO #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p GPIO'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/GPIO test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt GPIO/gpio_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
@@ -401,21 +221,6 @@ pipeline {
               propagate: false
             )
             echo "🔷 FPGA Manager #${result.number} → ${result.result}"
-
-            dir('artifacts') {
-              sh 'mkdir -p FPGA_Manager'
-              copyArtifacts(
-                projectName: 'CI-CD Pipelines/CLI Tests/FPGA Manager Test',
-                selector: specific("${result.number}"),
-                filter: 'test_results.txt',
-                optional: true
-              )
-              sh """
-                if [ -f test_results.txt ]; then
-                  mv test_results.txt FPGA_Manager/fpga_manager_test_results.txt
-                fi
-              """
-            }
           }
         }
       }
