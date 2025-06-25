@@ -12,7 +12,7 @@ pipeline {
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/qspi_test.patch"
-        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app
+        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app"
         BLOCK_NAME = "qspi"
     }
 
@@ -50,10 +50,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
+                        cd ${BUILD_PATH}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                        cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
- 
+                         
                     '''
                 }
             }
@@ -88,7 +87,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo "==== Flashing JIC Image ====" 
-                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                        cd ${BUILD_PATH}/build/qspi_atf_binaries
                         quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
                     '''
                 }
