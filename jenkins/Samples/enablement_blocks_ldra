@@ -24,7 +24,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/Bridge test',
+              job: 'CI-CD Pipelines/Tests/Bridge test',
               wait: true,
               propagate: false
             )
@@ -40,7 +40,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/DMA test',
+              job: 'CI-CD Pipelines/Tests/DMA test',
               wait: true,
               propagate: false
             )
@@ -56,7 +56,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/FATFS Test',
+              job: 'CI-CD Pipelines/Tests/FATFS Test',
               wait: true,
               propagate: false
             )
@@ -72,7 +72,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/SDM Mailbox Test',
+              job: 'CI-CD Pipelines/Tests/SDM Mailbox Test',
               wait: true,
               propagate: false
             )
@@ -88,7 +88,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/QSPI Test',
+              job: 'CI-CD Pipelines/Tests/QSPI Test',
               wait: true,
               propagate: false
             )
@@ -104,7 +104,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/Reboot Test',
+              job: 'CI-CD Pipelines/Tests/Reboot Test',
               wait: true,
               propagate: false
             )
@@ -120,7 +120,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/SDMMC Test',
+              job: 'CI-CD Pipelines/Tests/SDMMC Test',
               wait: true,
               propagate: false
             )
@@ -136,7 +136,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/Timer test',
+              job: 'CI-CD Pipelines/Tests/Timer test',
               wait: true,
               propagate: false
             )
@@ -152,7 +152,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/USB Test',
+              job: 'CI-CD Pipelines/Tests/USB Test',
               wait: true,
               propagate: false
             )
@@ -168,7 +168,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/WDT Test',
+              job: 'CI-CD Pipelines/Tests/WDT Test',
               wait: true,
               propagate: false
             )
@@ -184,7 +184,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/IOSSM Test', 
+              job: 'CI-CD Pipelines/Tests/IOSSM Test', 
               wait: true, 
               propagate: false
             )
@@ -200,7 +200,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/GPIO Test',
+              job: 'CI-CD Pipelines/Tests/GPIO Test',
               wait: true,
               propagate: false
             )
@@ -216,7 +216,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Driver Tests/FPGA Manager Test',
+              job: 'CI-CD Pipelines/Tests/FPGA Manager Test',
               wait: true,
               propagate: false
             )
