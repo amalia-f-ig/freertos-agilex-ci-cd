@@ -13,7 +13,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+              job: 'CI-CD Pipelines/CLI Tests/SEU Test',
               wait: true,
               propagate: false
             )
@@ -29,7 +29,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test',
+              job: 'CI-CD Pipelines/CLI Tests/FCS Driver Test',
               wait: true,
               propagate: false
             )

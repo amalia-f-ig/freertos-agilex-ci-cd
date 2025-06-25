@@ -12,7 +12,7 @@ pipeline {
     booleanParam(name: 'REBOOT',        defaultValue: true,  description: 'Run Reboot stage')
     booleanParam(name: 'SDM_Mailbox',   defaultValue: true,  description: 'Run SDM Mailbox stage')
     booleanParam(name: 'SDMMC',         defaultValue: true,  description: 'Run SDMMC stage')
-    booleanParam(name: 'TIMER',         defaultValue: true,  description: 'Run Timer stage')
+    booleanParam(name: 'Timer',         defaultValue: true,  description: 'Run Timer stage')
     booleanParam(name: 'USB',           defaultValue: true,  description: 'Run USB stage')
     booleanParam(name: 'WDT',           defaultValue: true,  description: 'Run WDT stage')
   }
@@ -24,7 +24,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+              job: 'CI-CD Pipelines/CLI Tests/Bridge test',
               wait: true,
               propagate: false
             )
@@ -33,7 +33,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p Bridge'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Bridge test',
+                projectName: 'CI-CD Pipelines/CLI Tests/Bridge test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -55,7 +55,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+              job: 'CI-CD Pipelines/CLI Tests/DMA test',
               wait: true,
               propagate: false
             )
@@ -64,7 +64,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p DMA'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/DMA test',
+                projectName: 'CI-CD Pipelines/CLI Tests/DMA test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -86,7 +86,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FATFS Test',
+              job: 'CI-CD Pipelines/CLI Tests/FATFS Test',
               wait: true,
               propagate: false
             )
@@ -95,7 +95,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p FATFS'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FATFS test',
+                projectName: 'CI-CD Pipelines/CLI Tests/FATFS test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -117,7 +117,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+              job: 'CI-CD Pipelines/CLI Tests/SDM Mailbox Test',
               wait: true,
               propagate: false
             )
@@ -126,7 +126,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p MAILBOX'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDM Mailbox Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/SDM Mailbox Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -148,7 +148,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+              job: 'CI-CD Pipelines/CLI Tests/QSPI Test',
               wait: true,
               propagate: false
             )
@@ -157,7 +157,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p QSPI'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/QSPI Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/QSPI Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -179,7 +179,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+              job: 'CI-CD Pipelines/CLI Tests/Reboot Test',
               wait: true,
               propagate: false
             )
@@ -188,7 +188,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p REBOOT'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Reboot Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/Reboot Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -210,7 +210,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+              job: 'CI-CD Pipelines/CLI Tests/SDMMC Test',
               wait: true,
               propagate: false
             )
@@ -219,7 +219,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p SDMMC'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/SDMMC Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/SDMMC Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -236,21 +236,21 @@ pipeline {
     }
 
     stage('Timer') {
-      when { expression { params.TIMER } }
+      when { expression { params.Timer } }
       steps {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',
+              job: 'CI-CD Pipelines/CLI Tests/Timer test',
               wait: true,
               propagate: false
             )
-            echo "🔷 TIMER #${result.number} → ${result.result}"
+            echo "🔷 Timer #${result.number} → ${result.result}"
 
             dir('artifacts') {
               sh 'mkdir -p Timer'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/Timer Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/Timer test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -272,7 +272,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/USB Test',
+              job: 'CI-CD Pipelines/CLI Tests/USB Test',
               wait: true,
               propagate: false
             )
@@ -281,7 +281,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p USB'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/USB Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/USB Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -303,7 +303,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+              job: 'CI-CD Pipelines/CLI Tests/WDT Test',
               wait: true,
               propagate: false
             )
@@ -312,7 +312,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p WDT'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/WDT Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/WDT Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -334,7 +334,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test', 
+              job: 'CI-CD Pipelines/CLI Tests/IOSSM Test', 
               wait: true, 
               propagate: false
             )
@@ -343,7 +343,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p IOSSM'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/IOSSM Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/IOSSM Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -365,7 +365,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/GPIO Test',
+              job: 'CI-CD Pipelines/CLI Tests/GPIO Test',
               wait: true,
               propagate: false
             )
@@ -374,7 +374,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p GPIO'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/GPIO test',
+                projectName: 'CI-CD Pipelines/CLI Tests/GPIO test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
@@ -396,7 +396,7 @@ pipeline {
         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',
+              job: 'CI-CD Pipelines/CLI Tests/FPGA Manager Test',
               wait: true,
               propagate: false
             )
@@ -405,7 +405,7 @@ pipeline {
             dir('artifacts') {
               sh 'mkdir -p FPGA_Manager'
               copyArtifacts(
-                projectName: 'CI-CD Pipelines/Samples (new ATF)/FPGA Manager Test',
+                projectName: 'CI-CD Pipelines/CLI Tests/FPGA Manager Test',
                 selector: specific("${result.number}"),
                 filter: 'test_results.txt',
                 optional: true
