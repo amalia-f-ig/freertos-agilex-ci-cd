@@ -45,18 +45,6 @@ pipeline {
             }
         }
 
-        stage('Apply Patch') {
-            steps {
-                script {
-                    sh '''
-                        cd ${REPO_PATH}
-                        git restore .
-                        patch -p1 --force < ${PATCH}
-                    '''
-                }
-            }
-        }
-
         
         stage('Build Binaries') {
             steps {
@@ -125,7 +113,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 fpga_manager_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 cli_tester.py ${BLOCK_NAME}_commands.txt>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }

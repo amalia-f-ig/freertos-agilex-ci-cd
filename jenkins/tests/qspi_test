@@ -45,7 +45,6 @@ pipeline {
             }
         }
 
-
         
         stage('Build Binaries') {
             steps {
@@ -53,7 +52,6 @@ pipeline {
                     sh '''
                         cd ${BUILD_PATH}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                         
                     '''
                 }
             }
@@ -115,7 +113,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 qspi_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 cli_tester.py ${BLOCK_NAME}_commands.txt>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }

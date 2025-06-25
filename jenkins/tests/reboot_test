@@ -14,7 +14,7 @@ pipeline {
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/reboot_test.patch"
         BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app"
         CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
-        BLOCK_NAME = "reboot_mngr"
+        BLOCK_NAME = "reboot"
     }
 
     stages {
@@ -45,7 +45,6 @@ pipeline {
             }
         }
 
-
         
         stage('Build Binaries') {
             steps {
@@ -53,13 +52,10 @@ pipeline {
                     sh '''
                         cd ${BUILD_PATH}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/os.rtos.fpga.freertos/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                        cp build/reboot_manager_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
- 
                     '''
                 }
             }
         }
-
 
         stage('Check Python Version and Installed Packages') {
             steps {
@@ -103,7 +99,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo "==== Power Cycle Device ===="
-                        python3 power_cycle.py 
+                        python3 power_cycle.py
                     '''
                 }
             }
@@ -117,7 +113,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 reboot_test.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 cli_tester.py ${BLOCK_NAME}_commands.txt>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
