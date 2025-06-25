@@ -1,0 +1,48 @@
+pipeline {
+  agent any
+
+  parameters {
+    booleanParam(name: 'RSU', defaultValue: true, description: 'Run RSU stage')
+    booleanParam(name: 'SPI', defaultValue: true, description: 'Run SPI stage')
+  }
+
+  stages {
+    stage('RSU') {
+      when { expression { params.RSU } }
+      steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/RSU Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 RSU #${result.number} → ${result.result}"
+          }
+        }
+      }
+    }
+
+    stage('SPI') {
+      when { expression { params.SPI } }
+      steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples (new ATF)/SPI Driver Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 SPI #${result.number} → ${result.result}"
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "🏁 RSU & SPI pipeline complete"
+    }
+  }
+}
