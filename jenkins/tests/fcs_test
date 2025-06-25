@@ -36,7 +36,7 @@ stages {
                     cd ${REMOTE_PATH}
                     git clone --branch feature/latest_altera_collaterals git@github.com:intel-collab/os.rtos.fpga.freertos.git
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git submodule update --init --recursive
+                    git -c submodule.fetchJobs=4 submodule update --init --recursive
 ENDSSH
                     """
                 }
