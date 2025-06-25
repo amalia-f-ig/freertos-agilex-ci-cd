@@ -126,23 +126,6 @@ ENDSSH
             }
         }
 
-        stage('Remote: Flash key') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_SCRIPT_PATH}/SEU
-                    export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
-                    export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
-                    export CMAKE_PATH=${CMAKE_PATH}
-                    export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    ./flash_key.sh
-ENDSSH
-                    """
-                }
-            }
-        }
-
         stage('Remote: Run Python Automation Script') {
             steps {
                 script {
@@ -152,7 +135,7 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 seu_test.py > test_results.txt 2>&1
+                    python3 cli_tester.py ${BLOCK_NAME}_commands.txt > test_results.txt 2>&1
 ENDSSH
                     """
                 }
