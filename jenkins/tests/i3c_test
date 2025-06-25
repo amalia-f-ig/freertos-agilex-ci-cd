@@ -14,6 +14,7 @@ pipeline {
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
         BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app"
+        CLI_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
         BLOCK_NAME = "i3c"
     }
 

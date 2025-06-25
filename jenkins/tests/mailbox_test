@@ -13,6 +13,7 @@ pipeline {
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/mailbox_test.patch"
         BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app"
+        CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
         BLOCK_NAME = "sdm_mailbox"
     }
 
