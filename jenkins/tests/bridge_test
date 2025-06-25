@@ -10,7 +10,7 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
+        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/bridge_test.patch"
         BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/FreeRTOS/Demo/CORTEX_A55_AGILEX_5_SOC/apps/samples/cli_app"
         CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
@@ -113,7 +113,7 @@ pipeline {
                         echo "==== PYTHON AUTOMATION SCRIPT ====" >> ${WORKSPACE}/test_results.txt
                         export PYTHONUSERBASE=$HOME/.local
                         python3 -m pip install --user pyserial 
-                        python3 cli_tester.py >> ${WORKSPACE}/test_results.txt 2>&1
+                        python3 cli_tester.py bridge_commands.txt>> ${WORKSPACE}/test_results.txt 2>&1
                     '''
                 }
             }
