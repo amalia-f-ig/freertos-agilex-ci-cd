@@ -21,14 +21,21 @@ pipeline {
     stage('Bridge') {
       when { expression { params.Bridge } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/Bridge test',
+              job: 'CI-CD Pipelines/Tests/Bridge test',
               wait: true,
               propagate: false
             )
             echo "🔷 Bridge #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -37,14 +44,21 @@ pipeline {
     stage('DMA') {
       when { expression { params.DMA } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/DMA test',
+              job: 'CI-CD Pipelines/Tests/DMA test',
               wait: true,
               propagate: false
             )
             echo "🔷 DMA #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -53,14 +67,21 @@ pipeline {
     stage('FATFS') {
       when { expression { params.FATFS } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/FATFS Test',
+              job: 'CI-CD Pipelines/Tests/FATFS Test',
               wait: true,
               propagate: false
             )
             echo "🔷 FATFS #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -69,14 +90,21 @@ pipeline {
     stage('MAILBOX') {
       when { expression { params.SDM_Mailbox } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/SDM Mailbox Test',
+              job: 'CI-CD Pipelines/Tests/SDM Mailbox Test',
               wait: true,
               propagate: false
             )
             echo "🔷 MAILBOX #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -85,14 +113,21 @@ pipeline {
     stage('QSPI') {
       when { expression { params.QSPI } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/QSPI Test',
+              job: 'CI-CD Pipelines/Tests/QSPI Test',
               wait: true,
               propagate: false
             )
             echo "🔷 QSPI #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -101,14 +136,21 @@ pipeline {
     stage('REBOOT') {
       when { expression { params.REBOOT } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/Reboot Test',
+              job: 'CI-CD Pipelines/Tests/Reboot Test',
               wait: true,
               propagate: false
             )
             echo "🔷 REBOOT #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -117,14 +159,21 @@ pipeline {
     stage('SDMMC') {
       when { expression { params.SDMMC } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/SDMMC Test',
+              job: 'CI-CD Pipelines/Tests/SDMMC Test',
               wait: true,
               propagate: false
             )
             echo "🔷 SDMMC #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -133,14 +182,21 @@ pipeline {
     stage('Timer') {
       when { expression { params.Timer } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/Timer test',
+              job: 'CI-CD Pipelines/Tests/Timer test',
               wait: true,
               propagate: false
             )
             echo "🔷 Timer #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -149,14 +205,21 @@ pipeline {
     stage('USB3') {
       when { expression { params.USB } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/USB Test',
+              job: 'CI-CD Pipelines/Tests/USB Test',
               wait: true,
               propagate: false
             )
             echo "🔷 USB3 #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -165,14 +228,21 @@ pipeline {
     stage('WDT') {
       when { expression { params.WDT } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/WDT Test',
+              job: 'CI-CD Pipelines/Tests/WDT Test',
               wait: true,
               propagate: false
             )
             echo "🔷 WDT #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -181,14 +251,21 @@ pipeline {
     stage('IOSSM') {
       when { expression { params.IOSSM } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/IOSSM Test', 
+              job: 'CI-CD Pipelines/Tests/IOSSM Test', 
               wait: true, 
               propagate: false
             )
             echo "🔷 IOSSM #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -197,14 +274,21 @@ pipeline {
     stage('GPIO') {
       when { expression { params.GPIO } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/GPIO Test',
+              job: 'CI-CD Pipelines/Tests/GPIO Test',
               wait: true,
               propagate: false
             )
             echo "🔷 GPIO #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -213,14 +297,21 @@ pipeline {
     stage('FPGA Manager') {
       when { expression { params.FPGA_Manager } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/CLI Tests/FPGA Manager Test',
+              job: 'CI-CD Pipelines/Tests/FPGA Manager Test',
               wait: true,
               propagate: false
             )
             echo "🔷 FPGA Manager #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
