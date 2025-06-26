@@ -17,7 +17,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/SEU Test',
+              job: 'CI-CD Pipelines/CLI Tests/SEU Test',
               wait: true,
               propagate: false
             )
@@ -40,7 +40,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/FCS Driver Test',
+              job: 'CI-CD Pipelines/CLI Tests/FCS Driver Test',
               wait: true,
               propagate: false
             )

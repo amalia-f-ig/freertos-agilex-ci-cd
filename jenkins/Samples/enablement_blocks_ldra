@@ -28,7 +28,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/Bridge test',
+              job: 'CI-CD Pipelines/CLI Tests/Bridge test',
               wait: true,
               propagate: false
             )
@@ -51,7 +51,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/DMA test',
+              job: 'CI-CD Pipelines/CLI Tests/DMA test',
               wait: true,
               propagate: false
             )
@@ -74,7 +74,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/FATFS Test',
+              job: 'CI-CD Pipelines/CLI Tests/FATFS Test',
               wait: true,
               propagate: false
             )
@@ -97,7 +97,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/SDM Mailbox Test',
+              job: 'CI-CD Pipelines/CLI Tests/SDM Mailbox Test',
               wait: true,
               propagate: false
             )
@@ -120,7 +120,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/QSPI Test',
+              job: 'CI-CD Pipelines/CLI Tests/QSPI Test',
               wait: true,
               propagate: false
             )
@@ -143,7 +143,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/Reboot Test',
+              job: 'CI-CD Pipelines/CLI Tests/Reboot Test',
               wait: true,
               propagate: false
             )
@@ -166,7 +166,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/SDMMC Test',
+              job: 'CI-CD Pipelines/CLI Tests/SDMMC Test',
               wait: true,
               propagate: false
             )
@@ -189,7 +189,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/Timer test',
+              job: 'CI-CD Pipelines/CLI Tests/Timer test',
               wait: true,
               propagate: false
             )
@@ -212,7 +212,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/USB Test',
+              job: 'CI-CD Pipelines/CLI Tests/USB Test',
               wait: true,
               propagate: false
             )
@@ -235,7 +235,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/WDT Test',
+              job: 'CI-CD Pipelines/CLI Tests/WDT Test',
               wait: true,
               propagate: false
             )
@@ -258,7 +258,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/IOSSM Test', 
+              job: 'CI-CD Pipelines/CLI Tests/IOSSM Test', 
               wait: true, 
               propagate: false
             )
@@ -281,7 +281,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/GPIO Test',
+              job: 'CI-CD Pipelines/CLI Tests/GPIO Test',
               wait: true,
               propagate: false
             )
@@ -304,7 +304,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/FPGA Manager Test',
+              job: 'CI-CD Pipelines/CLI Tests/FPGA Manager Test',
               wait: true,
               propagate: false
             )
