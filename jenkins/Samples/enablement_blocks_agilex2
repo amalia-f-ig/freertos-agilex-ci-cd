@@ -10,14 +10,21 @@ pipeline {
     stage('SEU') {
       when { expression { params.SEU } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/SEU Test',
+              job: 'CI-CD Pipelines/Tests/SEU Test',
               wait: true,
               propagate: false
             )
             echo "🔷 SEU #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -26,14 +33,21 @@ pipeline {
     stage('FCS') {
       when { expression { params.FCS } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Samples (new ATF)/FCS Driver Test',
+              job: 'CI-CD Pipelines/Tests/FCS Driver Test',
               wait: true,
               propagate: false
             )
             echo "🔷 FCS #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
