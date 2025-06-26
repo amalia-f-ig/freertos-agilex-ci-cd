@@ -40,7 +40,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/SPI Driver Test',
+              job: 'CI-CD Pipelines/Tests/SPI Test',
               wait: true,
               propagate: false
             )
