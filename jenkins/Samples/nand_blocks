@@ -17,7 +17,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/I2C Test',
+              job: 'CI-CD Pipelines/Samples/I2C Test',
               wait: true,
               propagate: false
             )
@@ -40,7 +40,7 @@ pipeline {
         ) {
           script {
             def result = build(
-              job: 'CI-CD Pipelines/Tests/I3C Driver Test',
+              job: 'CI-CD Pipelines/Samples/I3C Driver Test',
               wait: true,
               propagate: false
             )
