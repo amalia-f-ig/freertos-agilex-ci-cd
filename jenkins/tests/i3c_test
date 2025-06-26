@@ -13,7 +13,7 @@ pipeline {
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/i3c_test.patch"
-        BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/drivers"
+        BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests"
         CLI_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
         BLOCK_NAME = "i3c"
     }
