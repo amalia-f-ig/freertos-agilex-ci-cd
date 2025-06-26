@@ -22,6 +22,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 RSU #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -42,6 +45,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 SPI #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }

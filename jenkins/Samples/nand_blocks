@@ -22,6 +22,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 I2C #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -42,6 +45,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 I3C #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }

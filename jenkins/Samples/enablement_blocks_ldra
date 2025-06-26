@@ -33,6 +33,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 Bridge #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -53,6 +56,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 DMA #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -73,6 +79,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 FATFS #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -93,6 +102,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 MAILBOX #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -113,6 +125,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 QSPI #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -133,6 +148,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 REBOOT #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -153,6 +171,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 SDMMC #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -173,6 +194,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 Timer #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -193,6 +217,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 USB3 #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -213,6 +240,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 WDT #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -233,6 +263,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 IOSSM #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -253,6 +286,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 GPIO #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
@@ -273,6 +309,9 @@ pipeline {
               propagate: false
             )
             echo "🔷 FPGA Manager #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
           }
         }
       }
