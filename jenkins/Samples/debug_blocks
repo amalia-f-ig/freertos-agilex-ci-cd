@@ -10,7 +10,11 @@ pipeline {
     stage('RSU') {
       when { expression { params.RSU } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
               job: 'CI-CD Pipelines/Tests/RSU test',
@@ -26,7 +30,11 @@ pipeline {
     stage('SPI') {
       when { expression { params.SPI } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
               job: 'CI-CD Pipelines/Tests/SPI Driver Test',

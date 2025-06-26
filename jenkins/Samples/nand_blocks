@@ -10,7 +10,11 @@ pipeline {
     stage('I2C') {
       when { expression { params.I2C } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
               job: 'CI-CD Pipelines/Tests/I2C Test',
@@ -26,7 +30,11 @@ pipeline {
     stage('I3C') {
       when { expression { params.I3C } }
       steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
           script {
             def result = build(
               job: 'CI-CD Pipelines/Tests/I3C Driver Test',
