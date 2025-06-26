@@ -10,10 +10,10 @@ pipeline {
         REPO_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos"
         SCRIPT_REPO = "${WORKSPACE_PATH}/freertos-test-automation"
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
-        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
+        AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/iossm_test.patch"
         BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
-        CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/cli_tests"
+        CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         BLOCK_NAME = "iossm"
     }
 
