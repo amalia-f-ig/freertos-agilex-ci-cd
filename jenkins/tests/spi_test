@@ -14,7 +14,7 @@ pipeline {
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/spi_test.patch"
         ATF_PATCH = "${REMOTE_PATH}/patches/releasev5/tests/atf.patch"
-        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
+        BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests"
         CLI_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         BLOCK_NAME = "spi"   
     }
