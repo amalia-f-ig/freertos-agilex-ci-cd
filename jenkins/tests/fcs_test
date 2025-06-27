@@ -13,7 +13,8 @@ pipeline {
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/fcs_test.patch"
-        BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests"
+        ATF_PATCH = "${REMOTE_PATH}/patches/releasev5/tests/atf.patch"
+        BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
         CLI_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         BLOCK_NAME = "fcs"
     }
