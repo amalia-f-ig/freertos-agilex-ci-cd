@@ -53,6 +53,7 @@ pipeline {
                         cd ${REPO_PATH}
                         git restore .
                         patch -p1 --force < ${PATCH}
+                        patch -p1 --force < ${ATF_PATCH}
                     '''
                 }
             }

@@ -47,17 +47,18 @@ pipeline {
         }
 
         
-        // stage('Apply Patch') {
-        //     steps {
-        //         script {
-        //             sh '''
-        //                 cd ${REPO_PATH}
-        //                 git restore .
-        //                 patch -p1 --force < ${PATCH}
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${PATCH}
+                        patch -p1 --force < ${ATF_PATCH}
+                    '''
+                }
+            }
+        }
 
         
         stage('Build Binaries') {

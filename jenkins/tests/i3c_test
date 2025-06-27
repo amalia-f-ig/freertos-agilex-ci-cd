@@ -53,7 +53,8 @@ ENDSSH
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git restore .
-                    patch -p1 --force < ${PATCH_PATH}
+                    patch -p1 --force < ${PATCH_PATH} 
+                    patch -p1 --force < ${ATF_PATCH}
 ENDSSH
                     """
                 }
