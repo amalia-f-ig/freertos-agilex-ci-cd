@@ -34,7 +34,7 @@ stages {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}
-                    git clone --branch developement git@github.com:intel-collab/os.rtos.fpga.freertos.git
+                    git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git submodule update --init --recursive
 ENDSSH
