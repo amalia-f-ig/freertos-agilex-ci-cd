@@ -13,6 +13,7 @@ pipeline {
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/usb_test.patch"
         ATF_PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/atf.patch"
+        OSAL_PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/osal.patch"
         BUILD_PATH = "${WORKSPACE_PATH}/os.rtos.fpga.freertos/drivers/tests"
         CLI_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         BLOCK_NAME = "usb"
@@ -55,6 +56,7 @@ pipeline {
                         git restore .
                         patch -p1 --force < ${PATCH}
                         patch -p1 --force < ${ATF_PATCH}
+                        patch -p1 --force < ${OSAL_PATCH}
                     '''
                 }
             }
