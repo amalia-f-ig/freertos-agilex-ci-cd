@@ -64,7 +64,7 @@ pipeline {
                     sh '''
                         cd ${REPO_PATH}/samples/${BLOCK_NAME}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/ATF/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                        cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
+                        cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/samples/freertos_samples.bin
                     '''
                 }
             }
