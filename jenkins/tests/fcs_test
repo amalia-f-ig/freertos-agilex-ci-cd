@@ -19,30 +19,30 @@ pipeline {
 
 stages {
 
-    stage('Remote: Cleanup') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
-                    """
-                }
-            }
-        }
+//     stage('Remote: Cleanup') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
+//                     """
+//                 }
+//             }
+//         }
 
-        stage('Remote: Clone Repository') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}
-                    git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git submodule update --init --recursive
-ENDSSH
-                    """
-                }
-            }
-        }
+//         stage('Remote: Clone Repository') {
+//             steps {
+//                 script {
+//                     sh """
+//                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+//                     cd ${REMOTE_PATH}
+//                     git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git
+//                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+//                     git submodule update --init --recursive
+// ENDSSH
+//                     """
+//                 }
+//             }
+//         }
 
 
         stage('Remote: Apply Patch') {
