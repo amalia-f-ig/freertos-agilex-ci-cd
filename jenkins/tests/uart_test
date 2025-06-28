@@ -62,7 +62,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}
+                        cd ${REPO_PATH}/samples/${BLOCK_NAME}
                         rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/ATF/tools/RC4/agilex5_devkit_soc_ghrd/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
                         cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/drivers/samples/freertos_samples.bin
                     '''
@@ -99,7 +99,7 @@ pipeline {
                     sh '''
                         cd ${SCRIPT_PATH}
                         echo "==== Flashing JIC Image ====" 
-                        cd ${REPO_PATH}/drivers/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                        cd ${REPO_PATH}/samples/${BLOCK_NAME}/build/qspi_atf_binaries
                         quartus_pgm -c 1 -m jtag -o "pvi;qspi_image.jic"
                     '''
                 }
