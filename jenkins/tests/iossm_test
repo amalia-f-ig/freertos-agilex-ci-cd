@@ -64,7 +64,7 @@ pipeline {
                 script {
                     sh '''
                         cd ${REPO_PATH}/samples/${BLOCK_NAME}
-                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/atf/iossm/ghrd_a5ed065bb32ae6sr0_M9.sof -G Ninja && ninja -C build qspi-image
+                        rm -rf build && cmake -B build -DSOF_PATH=/home/intel-ldra/Jenkins/ATF/iossm/ghrd_a5ed065bb32ae6sr0_M9.sof -G Ninja && ninja -C build qspi-image
                         cp build/${BLOCK_NAME}_sample.bin ${REPO_PATH}/samples/freertos_samples.bin
                     '''
                 }
