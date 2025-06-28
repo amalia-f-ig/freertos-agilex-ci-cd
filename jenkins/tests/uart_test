@@ -13,6 +13,7 @@ pipeline {
         SCRIPT_PATH = "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         AUTOMATION_SCRIPT= "${WORKSPACE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/uart_test.patch"
+        ATF_PATCH = "${WORKSPACE_PATH}/patches/releasev5/tests/atf.patch"
         BLOCK_NAME = "uart"
     }
 
@@ -44,6 +45,18 @@ pipeline {
             }
         }
 
+        
+        stage('Apply Patch') {
+            steps {
+                script {
+                    sh '''
+                        cd ${REPO_PATH}
+                        git restore .
+                        patch -p1 --force < ${ATF_PATCH}
+                    '''
+                }
+            }
+        }
         
         stage('Build Binaries') {
             steps {
