@@ -23,7 +23,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh ${SSH_USER}@${SSH_HOST} 'rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos'
+                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
+                    rm -rf ${REMOTE_PATH}/os.rtos.fpga.freertos
+ENDSSH
                     """
                 }
             }
