@@ -1,0 +1,64 @@
+pipeline {
+  agent any
+
+  parameters {
+    booleanParam(name: 'NAND Blocks - Agilex3', defaultValue: true, description: 'Run NAND Blocks - Agilex3 stage')
+    booleanParam(name: 'DEBUG Blocks - Agilex4', defaultValue: true, description: 'Run DEBUG Blocks - Agilex4 stage')
+    booleanParam(name: 'ENABLEMENT Blocks - LDRA', defaultValue: true, description: 'Run ENABLEMENT Blocks - LDRA stage')
+    booleanParam(name: 'ENABLEMENT Blocks - Agilex2', defaultValue: true, description: 'Run ENABLEMENT Blocks - Agilex2 stage')
+  }
+
+  stages {
+    stage('SEU') {
+      when { expression { params.SEU } }
+      steps {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples/SEU Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 SEU #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
+          }
+        }
+      }
+    }
+
+    stage('FCS') {
+      when { expression { params.FCS } }
+      steps {
+        catchError(
+          buildResult:   'SUCCESS',
+          stageResult:   'FAILURE',
+          catchInterruptions: false
+        ) {
+          script {
+            def result = build(
+              job: 'CI-CD Pipelines/Samples/FCS Driver Test',
+              wait: true,
+              propagate: false
+            )
+            echo "🔷 FCS #${result.number} → ${result.result}"
+            if (result.result != 'SUCCESS') {
+              error("Test failed")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "🏁 SEU & FCS pipeline complete"
+    }
+  }
+}
