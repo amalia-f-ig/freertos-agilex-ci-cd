@@ -34,10 +34,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'af6609b7-75a7-43a2-9dfc-a6c45f0f4e44', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh '''
-                            cd ${WORKSPACE_PATH}
-                            git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git -j4
-                            cd ${REPO_PATH}
-                            git submodule update --init --recursive
+                            git clone --recurse-submodules --branch development -j4 git@github.com:intel-collab/os.rtos.fpga.freertos.git ${WORKSPACE_PATH}/${REPO_NAME}
                         '''
                     }
                 }
