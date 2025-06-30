@@ -40,7 +40,7 @@ pipeline {
                             cd ${WORKSPACE_PATH}
                             git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git -j4
                             cd ${REPO_PATH}
-                            git -c submodule.fetchJobs=4 submodule update --init --recursive
+                            git submodule update --init --recursive
                         '''
                     }
                 }

@@ -39,7 +39,7 @@ pipeline {
                     cd ${REMOTE_PATH}
                     git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git -j4
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
-                    git -c submodule.fetchJobs=4 submodule update --init --recursive
+                    git submodule update --init --recursive
 ENDSSH
                     """
                 }
