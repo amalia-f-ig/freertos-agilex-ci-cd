@@ -23,9 +23,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        if [ -d "${REPO_PATH}" ]; then
-                            rm -rf "${REPO_PATH}"
-                        fi
                         rm -f "${WORKSPACE}/test_results.txt"
                         rm -f "${WORKSPACE}/boot_log.txt"
                     '''
