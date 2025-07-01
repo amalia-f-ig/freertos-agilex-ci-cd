@@ -37,10 +37,7 @@ pipeline {
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}
-                    git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git -j4
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
-                    git submodule update --init --recursive
+                    git clone --recurse-submodules --branch development -j4 git@github.com:intel-collab/os.rtos.fpga.freertos.git ${REMOTE_REPO_PATH}/os.rtos.fpga.freertos
 ENDSSH
                     """
                 }
@@ -54,7 +51,6 @@ ENDSSH
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git restore .
-                    patch -p1 --force < ${PATCH_PATH} 
                     patch -p1 --force < ${ATF_PATCH}
                     patch -p1 --force < ${EMMC_PATCH}
 ENDSSH
@@ -85,7 +81,7 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${BUILD_PATH}
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/samples/${BLOCK_NAME}
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
