@@ -81,7 +81,7 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/samples/${BLOCK_NAME}
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/samples/sdmmc
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
