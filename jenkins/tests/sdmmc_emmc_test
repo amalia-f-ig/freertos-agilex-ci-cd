@@ -12,8 +12,11 @@ pipeline {
         REMOTE_SCRIPT_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/PDK_scripts"
         REMOTE_AUTOMATION_SCRIPT = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         AUTOMATION_SCRIPT = "/home/intel-ldra/Jenkins/freertos-test-automation/jenkins_scripts/driver_tests"
-        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/sdmmc_emmc_test.patch"
+        PATCH_PATH = "${REMOTE_PATH}/patches/releasev5/tests/sdmmc_test.patch"
         ATF_PATCH = "${REMOTE_PATH}/patches/releasev5/tests/atf.patch"
+        EMMC_PATCH = "${REMOTE_PATH}/patches/releasev5/tests/emmc_patch.patch"
+        BUILD_PATH = "${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests"
+        CLI_PATH = "${REMOTE_PATH}/freertos-test-automation/jenkins_scripts/driver_tests"
         BLOCK_NAME = "sdmmc_emmc"
     }
 
@@ -36,7 +39,7 @@ pipeline {
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}
                     git clone --branch development git@github.com:intel-collab/os.rtos.fpga.freertos.git -j4
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
+                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/drivers/tests
                     git submodule update --init --recursive
 ENDSSH
                     """
@@ -51,22 +54,9 @@ ENDSSH
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     cd ${REMOTE_PATH}/os.rtos.fpga.freertos
                     git restore .
-                    pwd
-                    patch -p1 --force < ${PATCH_PATH}
-ENDSSH
-                    """
-                }
-            }
-        }
-
-        stage('Remote: Apply Patch') {
-            steps {
-                script {
-                    sh """
-                    ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos
-                    git restore .
+                    patch -p1 --force < ${PATCH_PATH} 
                     patch -p1 --force < ${ATF_PATCH}
+                    patch -p1 --force < ${EMMC_PATCH}
 ENDSSH
                     """
                 }
@@ -95,14 +85,13 @@ ENDSSH
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/samples/${BLOCK_NAME}
+                    cd ${BUILD_PATH}
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
                     export PATH=\$ARM_GNU_TOOLCHAIN:\$CMAKE_PATH:\$QUARTUS_ROOTDIR/bin:\$QUARTUS_ROOTDIR/linux64:\$QUARTUS_ROOTDIR/../qsys/bin:\$PATH
-                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel6/Jenkins/ATF/tools/RC4/agilex5_devkit_soc_nand/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
-                    
-                    
+                    rm -rf build && cmake -B build -DSOF_PATH=/home/intel6/Jenkins/ATF/tools/RC4/agilex5_devkit_soc_emmc/ghrd_a5ed065bb32ae6sr0.sof -G Ninja && ninja -C build qspi-image
+                                        
 ENDSSH
                     """
                 }
@@ -129,7 +118,7 @@ ENDSSH
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
                     set -e
                     echo "=== Flashing JIC image ==="
-                    cd ${REMOTE_PATH}/os.rtos.fpga.freertos/samples/${BLOCK_NAME}/build/qspi_atf_binaries
+                    cd ${BUILD_PATH}/build/qspi_atf_binaries
                     export QUARTUS_ROOTDIR=${QUARTUS_ROOTDIR}
                     export ARM_GNU_TOOLCHAIN=${ARM_GNU_TOOLCHAIN}
                     export CMAKE_PATH=${CMAKE_PATH}
@@ -164,7 +153,7 @@ ENDSSH
                     echo "==== Running Python Automation Script ===="
                     cd ${REMOTE_AUTOMATION_SCRIPT}
                     python3 -m pip install --user pyserial
-                    python3 sdmmc_emmc_test.py > test_results.txt 2>&1
+                    python3 ${BLOCK_NAME}_test.py > test_results.txt 2>&1
 ENDSSH
                     """
                 }
