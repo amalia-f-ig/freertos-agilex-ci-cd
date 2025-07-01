@@ -37,7 +37,7 @@ pipeline {
                 script {
                     sh """
                     ssh ${SSH_USER}@${SSH_HOST} << ENDSSH
-                    git clone --recurse-submodules --branch development -j4 git@github.com:intel-collab/os.rtos.fpga.freertos.git ${REMOTE_REPO_PATH}/os.rtos.fpga.freertos
+                    git clone --recurse-submodules --branch development -j4 git@github.com:intel-collab/os.rtos.fpga.freertos.git ${REMOTE_PATH}/os.rtos.fpga.freertos
 ENDSSH
                     """
                 }
